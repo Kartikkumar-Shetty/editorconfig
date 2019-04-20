@@ -381,6 +381,11 @@
 (use-package golint
   :ensure t)
 
+;;highlights the syntax errors
+(use-package flycheck-golangci-lint
+  :ensure t
+  :hook (go-mode . flycheck-golangci-lint-setup))
+
 (defun go-mode-setup ()
   (go-eldoc-setup)
   (setq gofmt-command "goimports")
