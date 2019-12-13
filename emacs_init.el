@@ -1,4 +1,5 @@
 ;; this is a init code for the eamcs text editor enivronment
+;; this is a init code for the eamcs text editor enivronment
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -25,7 +26,6 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#141414" :foreground "#F8F8F2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "CF  " :family "Ubuntu Mono"))))
  '(auto-dim-other-buffers-face ((t (:background "#141414")))))
-
 
 
 (set-background-color "#141414")
@@ -124,9 +124,11 @@
 
 
 ;;highlight the hex color code to the color of the hex value using Rainbow package e.g. #00FF00
-(use-package rainbow-mode
+(use-package rainbow-delimiters
   :ensure t)
-(rainbow-mode 1)
+(use-package highlight-parentheses
+  :ensure t)
+(highlight-parentheses-mode)
 
 ;;Adding efficient window switch package called switch Window
 (use-package switch-window
@@ -173,9 +175,12 @@
 (line-number-mode 1)
 (column-number-mode 1)
 ;;display line number in the margins using nlinum
-(use-package nlinum
-  :ensure t
-  :init(nlinum-mode 1))
+;; (use-package nlinum
+;;   :ensure t
+;;   :init(nlinum-mode 1))
+(use-package hlinum
+  :ensure t)
+(hlinum-activate)
 (global-linum-mode t)
 (setq linum-format "%3d \u2502")
 
@@ -205,7 +210,6 @@
 ;;highight the rounf=d brackets to keep track of if all all closed, using rainbow package
 (use-package rainbow-delimiters
   :ensure t)
-(rainbow-delimiters-mode 1)
 
 
 
@@ -297,6 +301,7 @@
 ;;install intellisense for GO
 (use-package company
   :ensure t)
+(add-hook 'after-init-hook 'global-company-mode)
 
  (use-package company-go
    :ensure t
@@ -399,7 +404,7 @@
 ;; (add-hook 'go-mode-hook 'go-imports-insert-import)
 ;; (add-hook 'go-mode-hook 'go-imports-insert-reload-packages-list)
 ;; (add-hook 'go-mode-hook 'golint)
-(add-hook 'go-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'go-mode-hook 'rainbow-mode)
 (add-hook 'go-mode-hook 'smart-tabs-mode)
 
 (provide 'go-mode-autoloads)
@@ -412,8 +417,6 @@
 
 
 ;;Adding new key for Go-guru-go to defination
-(bind-key "s-j"  'go-guru-definition)
-(bind-key "C-c c-j"  'go-guru-definition) ;;for terminal mode
 (bind-key "C-c j"  'go-guru-definition) ;; for terminal mode
 
 
@@ -570,7 +573,8 @@
   )
 
 
- (set-face-attribute 'region nil :background "#808080" :foreground "#ffffff")
+(set-face-attribute 'region nil :background "#808080" :foreground "#ffffff")
+
 
 
 (use-package company-posframe
@@ -607,18 +611,21 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Linum-format "%7i ")
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
    (vector "#839496" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"))
  '(beacon-color "#dc322f")
  '(compilation-message-face (quote default))
- '(custom-enabled-themes (quote (monokai)))
+ '(custom-enabled-themes (quote (darkokai)))
  '(custom-safe-themes
    (quote
-    ("84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "218bc69ef19fd1f681cdded7b85924e41242fe87a6033df823499822f1397f1a" "3e160974b9e3e1b53270d1fb5bbaf56f0c689017e177972f72584bf096efc4cc" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "8dc7f4a05c53572d03f161d82158728618fb306636ddeec4cce204578432a06d" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" default)))
+    ("37ba833442e0c5155a46df21446cadbe623440ccb6bbd61382eb869a2b9e9bf9" "a77ced882e25028e994d168a612c763a4feb8c4ab67c5ff48688654d0264370c" "3860a842e0bf585df9e5785e06d600a86e8b605e5cc0b74320dfe667bcbe816c" "c5ad91387427abc66af38b8d6ea74cade4e3734129cbcb0c34cc90985d06dcb3" "84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "218bc69ef19fd1f681cdded7b85924e41242fe87a6033df823499822f1397f1a" "3e160974b9e3e1b53270d1fb5bbaf56f0c689017e177972f72584bf096efc4cc" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "8dc7f4a05c53572d03f161d82158728618fb306636ddeec4cce204578432a06d" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" default)))
+ '(fci-rule-character-color "#202020")
  '(fci-rule-color "#073642")
  '(frame-background-mode (quote dark))
+ '(fringe-mode 4 nil (fringe))
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote
@@ -631,12 +638,17 @@
      ("#F309DF" . 85)
      ("#3C3D37" . 100))))
  '(magit-diff-use-overlays nil)
+ '(main-line-color1 "#1E1E1E")
+ '(main-line-color2 "#111111")
+ '(main-line-separator-style (quote chamfer))
  '(package-selected-packages
    (quote
-    (company-box company-quickhelp uniquify helm use-package treemacs-projectile symon switch-window sudo-edit spacemacs-theme smex smart-tabs-mode smart-mode-line-powerline-theme smart-backspace rainbow-mode rainbow-delimiters popwin popup-kill-ring nlinum naquadah-theme monokai-theme ido-vertical-mode idle-highlight-in-visible-buffers-mode highlight-numbers highlight-indent-guides gotest golint godoctor go-snippets go-imports go-impl go-imenu go-guru go-gen-test go-fill-struct go-errcheck go-eldoc go-dlv go-direx go-add-tags focus firecode-theme dracula-theme dmenu diminish dashboard cql-mode company-go company-childframe color-theme-sanityinc-solarized calmer-forest-theme beacon)))
+    (darkokai-theme soothe-theme grandshell-theme cyberpunk-2019-theme highlight-parentheses highlight-parantheses hlinum company-box company-quickhelp uniquify helm use-package treemacs-projectile symon switch-window sudo-edit spacemacs-theme smex smart-tabs-mode smart-mode-line-powerline-theme smart-backspace rainbow-mode rainbow-delimiters popwin popup-kill-ring nlinum naquadah-theme monokai-theme ido-vertical-mode idle-highlight-in-visible-buffers-mode highlight-numbers highlight-indent-guides gotest golint godoctor go-snippets go-imports go-impl go-imenu go-guru go-gen-test go-fill-struct go-errcheck go-eldoc go-dlv go-direx go-add-tags focus firecode-theme dracula-theme dmenu diminish dashboard cql-mode company-go company-childframe color-theme-sanityinc-solarized calmer-forest-theme beacon)))
  '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#262626")))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
+ '(powerline-color1 "#1E1E1E")
+ '(powerline-color2 "#111111")
  '(sml/mode-width
    (if
        (eq
