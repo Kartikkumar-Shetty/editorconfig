@@ -126,9 +126,7 @@
 ;;highlight the hex color code to the color of the hex value using Rainbow package e.g. #00FF00
 (use-package rainbow-delimiters
   :ensure t)
-(use-package highlight-parentheses
-  :ensure t)
-(highlight-parentheses-mode)
+(show-paren-mode 1)
 
 ;;Adding efficient window switch package called switch Window
 (use-package switch-window
@@ -207,9 +205,6 @@
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
 
-;;highight the rounf=d brackets to keep track of if all all closed, using rainbow package
-(use-package rainbow-delimiters
-  :ensure t)
 
 
 
@@ -273,6 +268,7 @@
 (setq treemacs-sorting 'alphabetic-asc)
 (setq treemacs-recenter-after-file-follow t)
 (setq split-width-threshold 0)
+(setq treemacs-position 'right)
 
 
 
@@ -334,6 +330,8 @@
 (use-package go-eldoc
   :ensure t)
 (add-hook 'go-mode-hook 'go-eldoc-setup)
+
+
 
 ;;(define-key go-mode-map (kbd "C-c C-t") 'go-add-tags)
 
@@ -404,7 +402,6 @@
 ;; (add-hook 'go-mode-hook 'go-imports-insert-import)
 ;; (add-hook 'go-mode-hook 'go-imports-insert-reload-packages-list)
 ;; (add-hook 'go-mode-hook 'golint)
-(add-hook 'go-mode-hook 'rainbow-mode)
 (add-hook 'go-mode-hook 'smart-tabs-mode)
 
 (provide 'go-mode-autoloads)
@@ -801,3 +798,4 @@
 (set-face-attribute 'font-lock-string-face nil :italic t :slant 'italic)
 (set-face-attribute 'font-lock-type-face nil :italic t :slant 'italic :bold t)
 (set-face-attribute 'font-lock-keyword-face nil :bold t)
+(add-hook 'go-mode-hook 'rainbow-delimiters-mode)
