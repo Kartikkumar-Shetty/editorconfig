@@ -1,0 +1,263 @@
+* Configurations
+** Init packages 
+*** Init packages
+#+BEGIN_SRC emacs-lisp
+  ;;initialize all the packages
+  (require 'package)
+  (setq package-enable-at-startup nil)		  		      
+  (setq inhibit-startup-message t)
+  ;;install use package
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (package-initialize)					 
+#+END_SRC
+*** ORG Mode
+#+BEGIN_SRC emacs-lisp
+  ;;use melpa as my package manager			   
+  (add-to-list 'package-archives			   
+	       '("melpa" . "https://melpa.org/packages/")) 
+  (require 'org)						      
+  ;;enable orgmode bullets					      
+  (use-package org-bullets					      
+    :ensure t							      
+    :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode)))) 
+
+  ;; org mode templates ;;use <el to invoke this template;;TODO: not working
+  (setq org-src-window-setup 'current-window)
+  (add-to-list 'org-structure-template-alist
+	       '("el" "#+BEGIN_SRC emacs-lisp \n?\n#+END_SRC"))
+
+#+END_SRC
+*** remove toolbars and menus, disable bell, scrollbars
+#+BEGIN_SRC emacs-lisp
+  ;Remove the toolbar and menubar
+  (tool-bar-mode -1)		 
+  (menu-bar-mode -1)
+  ;;disable ring bell function
+  (setq ring-bell-function 'ignore)
+  ;;scrolling os too much, lets reduce it to scroll line by line
+  (setq scroll-conservatively 100)				
+  (scroll-bar-mode -1)
+#+END_SRC
+
+** IDO
+*** IDO
+#+BEGIN_SRC emacs-lisp                             
+  ;;this allow you to browse through files on C-x b
+    (setq ido-enable-flex-matching nil)            
+    (setq ido-create-new-buffer 'always)           
+    (setq ido-everywhere t)                        
+    (ido-mode 1)                                   
+
+#+END_SRC
+
+*** IDO Vertical mode
+#+BEGIN_SRC emacs-lisp
+  ;;NOTE: Check alternates											           
+  ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs     
+  (use-package ido-vertical-mode										       	   
+    :ensure t													       	   
+    :init														   
+    (ido-vertical-mode 1)												   
+    (setq ido-vertical-define-keys 'C-n-and-C-p-only));;this allows us to traverse through files using up and down chords
+  (global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer         
+#+END_SRC
+
+** IBuffer opening and expert killing
+*** display ibuffer for opening buffer window
+#+BEGIN_SRC emacs-lisp												       
+  ;;open the buffer list in a new window and dont use ido for it, use ibuffer, the window opens opn C-x b	       
+  (global-set-key (kbd "C-x b") 'ibuffer)
+  ;;dont ask for confirmation everytime i kill a buffer in the ibuffer buffer
+  (setq ibuffer-expert t)					       
+#+END_SRC													       
+*** Kill buffer without asking for buffer name
+#+BEGIN_SRC emacs-lisp						  
+  ;; on C-x K kill the buffer dont ask from list of buffer name	  
+  (defun kill-curr-buffer()					  
+    (interactive)						  
+    (kill-buffer (current-buffer)))				  
+  (global-set-key (kbd "C-x k") 'kill-curr-buffer)		  
+#+END_SRC
+*** kill all buffers
+#+BEGIN_SRC emacs-lisp
+  (defun kill-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
+#+END_SRC
+** Which Key
+#+BEGIN_SRC emacs-lisp
+  ;;show prompt after C-x
+  (use-package which-key
+    :ensure t
+    :init
+    (which-key-mode))
+#+END_SRC
+** GUI Theme
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'afternoon-theme)
+    (package-refresh-contents)
+    (package-install 'afternoon-theme))
+ #+END_SRC
+** Avy
+#+BEGIN_SRC emacs-lisp
+  ;;enables you to search any character
+  (use-package avy
+  :ensure t
+  :bind
+  ("M-s" . avy-goto-char))
+#+END_SRC
+** Custom config open and reload functions
+#+BEGIN_SRC emacs-lisp
+  ;;reload config file on a shortcut
+  (defun config-open()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+
+    (global-set-key (kbd "C-c o") 'config-open)
+
+  ;;config reload
+
+  (defun config-reload()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/init.el")))
+
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+END_SRC
+** Rainbow
+#+BEGIN_SRC emacs-lisp
+  ;;this highlights the background of a hex code color code
+  (use-package rainbow-mode
+  :ensure t
+  :init (rainbow-mode 1))
+#+END_SRC
+** Switch Windows Settings
+*** Switch Window
+#+BEGIN_SRC emacs-lisp																	      
+    ;;window navigation- switch window															      
+    (use-package switch-window																      
+      :ensure t																		      
+      :config																		      
+      (setq switch-window-input-style 'minibuffer)													      
+      (setq switch-window-increase 4)															      
+      (setq switch-window-threshold 1);;this shows window labels on C-x o when the number of windows is greater than 3; keeping it 1 to allow resize shortcuts
+      :bind																		      
+      ([remap other-window] . switch-window))    ;;remap the other window function to switch window
+#+END_SRC
+*** Split Window function and shortcuts
+#+BEGIN_SRC emacs-lisp										   
+    ;; custom function : when I split the window, the cursor should go to the newly created window 
+    (defun split-and-follow-horizontally()							   
+    (interactive)										   
+    (split-window-below)									   
+    (balance-windows)										   
+    (other-window 1))				   
+    (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)							   
+    ;; custom function : when I split the window, the cursor should go to the newly created window 
+    (defun split-and-follow-vertically()							   
+    (interactive)										   
+    (split-window-right)									   
+    (balance-windows)										   
+    (other-window 1))					   
+    (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+#+END_SRC
+** Search, Navigation using smex
+*** smex
+#+BEGIN_SRC emacs-lisp
+  ;;install smex, this allow us with option-x to view various command options					      
+  (use-package smex												      
+    :ensure t													      
+    :init (smex-initialize)											      
+    :bind													      
+    ("M-x" . smex))
+#+END_SRC
+** Text Editing & Parsing settings, hungry delete
+*** Parse through words in case of camel case
+#+BEGIN_SRC emacs-lisp
+  (global-subword-mode 1)
+#+END_SRC
+*** Kill whole word
+#+BEGIN_SRC emacs-lisp
+  (defun kill-whole-word()
+    (interactive)
+    (backward-word)
+    (kill-word 1))
+  (global-set-key (kbd "C-c w w") 'kill-whole-word)
+#+END_SRC
+*** Smart hungry delete
+#+BEGIN_SRC emacs-lisp
+  (use-package smart-hungry-delete
+    :ensure t
+    :init (global-set-key (kbd "C-<backspace>") 'smart-hungry-delete-backward-char))
+#+END_SRC
+*** Show line number in window
+#+BEGIN_SRC emacs-lisp
+  (use-package hlinum
+    :ensure t)
+  (hlinum-activate)
+  (global-linum-mode t)
+  (setq linum-format "%3d \u2502")
+#+END_SRC
+*** Replace yes and no with y or n
+#+BEGIN_SRC emacs-lisp
+;;ad alias for yes or no
+(defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+*** Copy whole line
+#+BEGIN_SRC emacs-lisp
+(defun copy-whole-line()
+(interactive)
+(save-excursion
+(kill-new (buffer-substring (point-at-bol) (point-at-eol)))))
+(global-set-key (kbd "C-c w l") 'copy-whole-line)
+#+END_SRC
+
+** Programming Basic Settings
+*** Electric Pair
+#+BEGIN_SRC emacs-lisp
+  ;;autocomplete the parentheses and others
+  (setq electric-pair-pairs '(
+			     (?\( . ?\))
+			     (?\[ . ?\])
+			     (?\" . ?\")
+			     (?\' . ?\')
+			     (?\{ . ?\})
+			     ))
+  (electric-pair-mode t)
+#+END_SRC
+*** sudo edit
+#+BEGIN_SRC emacs-lisp
+  (use-package sudo-edit
+    :ensure t
+    :bind ("s-e" . sudo-edit))
+#+END_SRC
+*** rainbow delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+  :ensure t
+  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+  (show-paren-mode 1))
+#+END_SRC
+*** Autocomplete
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+  :ensure t
+  :init
+  (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
+** Modeline
+*** Show line numbers
+#+BEGIN_SRC emacs-lisp
+  (line-number-mode 1)
+  (column-number-mode 1)
+#+END_SRC
+** Dashboard
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config (dashboard-setup-startup-hook))
+  (setq dashboard-banner-logo-title "Welcome Master K")
+  (setq dashboard-center-content t)
+#+END_SRC
