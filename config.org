@@ -163,6 +163,20 @@
     (other-window 1))					   
     (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 #+END_SRC
+*** Navigate through open buffers
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c <up>") 'windmove-up)
+  (global-set-key (kbd "C-C <down>") 'windmove-down)
+  (global-set-key (kbd "C-c <left>") 'windmove-left)
+  (global-set-key (kbd "C-c <right>") 'windmove-right)
+#+END_SRC
+*** resize window
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-s-<down>") 'shrink-window)
+  (global-set-key (kbd "C-s-<up>") 'enlarge-window)
+  (global-set-key (kbd "C-s-<left>") 'shrink-window-horizontally)
+  (global-set-key (kbd "C-s-<right>") 'enlarge-window-horizontally)
+#+END_SRC
 ** Search, Navigation using smex
 *** smex
 #+BEGIN_SRC emacs-lisp
@@ -214,6 +228,12 @@
 (global-set-key (kbd "C-c w l") 'copy-whole-line)
 #+END_SRC
 
+*** kill ring- multiple 
+#+BEGIN_SRC emacs-lisp
+  (use-package popup-kill-ring
+    :ensure t
+    :bind ("M-y" . popup-kill-ring))
+#+END_SRC
 ** Programming Basic Settings
 *** Electric Pair
 #+BEGIN_SRC emacs-lisp
@@ -253,6 +273,14 @@
   (line-number-mode 1)
   (column-number-mode 1)
 #+END_SRC
+*** smart mode line
+#+BEGIN_SRC emacs-lisp
+(setq sml/no-confirm-load-theme t)
+(use-package smart-mode-line
+:ensure t
+:init (setq sml/theme 'dark))
+;; TODO: use package dimisnish to remove minor modes fdeom the mode line
+#+END_SRC
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
@@ -260,4 +288,18 @@
     :config (dashboard-setup-startup-hook))
   (setq dashboard-banner-logo-title "Welcome Master K")
   (setq dashboard-center-content t)
+#+END_SRC
+** dmenu
+#+BEGIN_SRC emacs-lisp
+  (use-package dmenu
+    :ensure t
+    :bind ("C-M-<SPC>" . 'dmenu))
+#+END_SRC
+** symon
+#+BEGIN_SRC emacs-lisp
+  ;;system monitoring
+  (use-package symon
+    :ensure t
+    :bind
+    ("s-h" . symon-mode))
 #+END_SRC
