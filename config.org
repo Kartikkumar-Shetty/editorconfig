@@ -45,10 +45,10 @@
 *** IDO
 #+BEGIN_SRC emacs-lisp                             
   ;;this allow you to browse through files on C-x b
-    (setq ido-enable-flex-matching nil)            
-    (setq ido-create-new-buffer 'always)           
-    (setq ido-everywhere t)                        
-    (ido-mode 1)                                   
+  ;;  (setq ido-enable-flex-matching nil)            
+  ;;  (setq ido-create-new-buffer 'always)           
+  ;;  (setq ido-everywhere t)                        
+  ;;  (ido-mode 1)                                   
 
 #+END_SRC
 
@@ -56,12 +56,12 @@
 #+BEGIN_SRC emacs-lisp
   ;;NOTE: Check alternates											           
   ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs     
-  (use-package ido-vertical-mode										       	   
-    :ensure t													       	   
-    :init														   
-    (ido-vertical-mode 1)												   
-    (setq ido-vertical-define-keys 'C-n-and-C-p-only));;this allows us to traverse through files using up and down chords
-  (global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer         
+ ;; (use-package ido-vertical-mode										       	   
+  ;;  :ensure t													       	   
+  ;;  :init														   
+  ;;  (ido-vertical-mode 1)												   
+  ;;  (setq ido-vertical-define-keys 'C-n-and-C-p-only));;this allows us to traverse through files using up and down chords
+  ;;(global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer         
 #+END_SRC
 
 ** IBuffer opening and expert killing
@@ -303,3 +303,29 @@
     :bind
     ("s-h" . symon-mode))
 #+END_SRC
+** IVY	Swiper and Counsel(Add this at the end of file)																								
+   #+BEGIN_SRC emacs-lisp																							
+       ;;ivy is use as a replacement for ido																				
+     (use-package ivy																							
+       :ensure t																								
+       :init (ivy-mode 1)																							
+       (setq ivy-use-virtual-buffers t)																					
+       (setq enable-recursive-minibuffers t)																				
+       )																									
+   																									
+     ;;use ivy to switch buffers in the the mini buffer																			
+     (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer         ;;swiper: this provides a better search functionality, dependent on ivy package																			
+   																									
+     ;;use swiper for searching C-s																					
+     (use-package swiper																							
+       :ensure t																								
+       :bind("C-s" . 'swiper)																						
+       )																									
+   																									
+     ;;use counsel for command fuzzy search																				
+     (use-package counsel																							
+       :ensure t																								
+       :init (counsel-mode 1))
+       ;;add this at the end of file; else M-x bindings gets overidden
+     (global-set-key (kbd "M-x") 'counsel-M-x)	
+   #+END_SRC
