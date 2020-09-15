@@ -64,22 +64,6 @@
   ;;  (setq ido-vertical-define-keys 'C-n-and-C-p-only));;this allows us to traverse through files using up and down chords
   ;;(global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer         
 #+END_SRC
-
-** Quelpa
-#+BEGIN_SRC emacs-lisp
-  ;;allows you to provide git location to use-package
-  (unless (package-installed-p 'quelpa)
-    (with-temp-buffer
-      (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-      (eval-buffer)
-      (quelpa-self-upgrade)))
-
-  (quelpa
-   '(quelpa-use-package
-     :fetcher git
-     :url "https://github.com/quelpa/quelpa-use-package.git"))
-  (require 'quelpa-use-package)
-#+END_SRC
 ** IBuffer opening and expert killing
 *** display ibuffer for opening buffer window
 #+BEGIN_SRC emacs-lisp												       
@@ -307,7 +291,7 @@
       (use-package company
       :ensure t
       :config
-      (setq company-idle-delay .1)
+      (setq company-idle-delay 0)
       (setq company-minimum-prefix-length 1)
       :init
       (add-hook 'after-init-hook 'global-company-mode))
@@ -427,111 +411,6 @@
   (setq split-width-threshold 0)
   (setq treemacs-position 'right)
 #+END_SRC
-** GO
-*** GO mode 
-#+BEGIN_SRC emacs-lisp
-  (use-package go-mode
-      :ensure t
-      :quelpa (eg
-               :fetcher github
-               :repo "sigma/go-mode.el")
-      )
-   (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-  (add-hook 'go-mode-hook 
-            (lambda () 
-              (add-hook 'after-save-hook 'gofmt nil t)
-              )
-            )
-  (local-set-key (kbd "M-.") 'godef-jump)
-  (add-hook 'go-mode-hook 'smart-tabs-mode)
-
-  (local-set-key (kbd "M-*") 'pop-tag-mark)
-    ;;(add-hook 'go-mode-hook (lambda () (add-hook 'after-save-hook 'gofmt nil t)))
-#+END_SRC
-*** Go autocomplete
-#+BEGIN_SRC emacs-lisp
-(require 'cl)
-  (use-package company-go
-     :ensure t
-    :quelpa (eg                     
-           :fetcher github          
-           :repo "sigma/gocode")
-)
-  (add-hook 'go-mode-hook (lambda ()
-                            (set (make-local-variable 'company-backends) '(company-go))
-                            (company-mode)))
- (setq global-auto-complete-mode 't)
-#+END_SRC
-*** GO Direx (create a map of your code file)
-#+BEGIN_SRC emacs-lisp
-  (use-package go-direx
-    :ensure t)
-  (use-package popwin
-    :ensure t)
-  (push '("^\*go-direx:" :regexp t :position left :width 0.4 :dedicated t :stick t)
-        popwin:special-display-config)
-#+END_SRC
-*** Go Eldoc(show details of keyword on cursor)
-#+BEGIN_SRC emacs-lisp
-  (use-package go-eldoc
-    :ensure t)
-  (add-hook 'go-mode-hook 'go-eldoc-setup)
-#+END_SRC
-*** Go Add Tags
-#+BEGIN_SRC emacs-lisp
-  (use-package go-add-tags
-    :ensure t)
-  (custom-set-variables
-   '(go-add-tags-style 'lower-camel-case))
-#+END_SRC
-*** Go Error check
-#+BEGIN_SRC emacs-lisp
-  ;;GO LANG Error Checks, may be like build
-  (use-package go-errcheck
-    :ensure t)
-#+END_SRC
-*** Go Fill struct
-#+BEGIN_SRC emacs-lisp
-  (use-package go-fill-struct
-   :ensure t)
-#+END_SRC
-*** Go Gen Test
-#+BEGIN_SRC emacs-lisp
-    ;Installs go-gen-test which generates test functions for the selcted functions
-    (use-package go-gen-test
-      :ensure t)
-  (defun my-go-gen-test-setup ()
-    (interactive)
-    (local-set-key (kbd "C-c C-g") 'go-gen-test-dwim))
-  (add-hook 'go-mode-hook 'my-go-gen-test-setup)
-
-#+END_SRC
-*** Go Imports
-#+BEGIN_SRC emacs-lisp
-  ;;Setting up go Imports, adds automatic imports after save, can invoke import using the below short cuts
-  (use-package go-imports
-    :ensure t)
-    (setq gofmt-command "goimports")
- ;; (add-hook 'go-mode-hook 'gofmt-before-save)
-#+END_SRC
-*** Go GURU
-#+BEGIN_SRC emacs-lisp
-    (use-package go-guru
-      :ensure t
-  :init (go-guru-hl-identifier-mode))
-#+END_SRC
-*** Go test
-#+BEGIN_SRC emacs-lisp
-  (use-package gotest
-    :ensure t)
-#+END_SRC
-*** Go fly check
-#+BEGIN_SRC emacs-lisp
-;;highlights the syntax errors
-(use-package flycheck-golangci-lint
-  :ensure t
-  :hook (go-mode . flycheck-golangci-lint-setup))
-#+END_SRC
 ** Cassandra
 #+BEGIN_SRC emacs-lisp
   ;;Cassandra Plugin
@@ -609,4 +488,80 @@
 (let ((process-environment tramp-remote-process-environment))
        (setenv "ENV" "$HOME/.profile")
        (setq tramp-remote-process-environment process-environment))
+#+END_SRC
+** GO debugger
+#+BEGIN_SRC emacs-lisp
+  (use-package go-dlv
+  :ensure t)
+#+END_SRC
+** GO Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+  :defer t
+  :ensure t
+  :mode ("\\.go\\'" . go-mode))
+#+END_SRC
+** LSP
+*** lsp mode(enabled for GO mode)
+#+BEGIN_SRC emacs-lisp
+;;lsp go mode
+
+;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
+  (use-package lsp-mode
+    :ensure t
+    :commands (lsp lsp-deferred)
+    :hook (go-mode . lsp-deferred))
+
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+    (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+    (add-hook 'go-mode-hook #'lsp)
+#+END_SRC
+*** LSP UI
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-ui
+  :ensure t)
+(define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+(define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+#+END_SRC
+*** flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t)
+  (global-flycheck-mode)
+  (package-install 'exec-path-from-shell)
+  (exec-path-from-shell-initialize)
+#+END_SRC
+*** lsp ivy
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+  (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+#+END_SRC
+*** lsp dap mpde for debugging
+#+BEGIN_SRC emacs-lisp
+  (use-package dap-mode
+:ensure t)
+#+END_SRC
+*** company mode(already installed)
+*** lsp treemacs
+#+BEGIN_SRC emacs-lisp
+(lsp-treemacs-sync-mode 1)
+#+END_SRC
+*** lsp configurations
+#+BEGIN_SRC emacs-lisp
+  (lsp-register-custom-settings
+   '(("gopls.completeUnimported" t t)
+     ("gopls.staticcheck" t t)))
+#+END_SRC
+*** company lsp
+#+BEGIN_SRC emacs-lisp
+  ;; Lsp completion
+  (use-package company-lsp
+    :defer t
+    :after lsp company
+    :init
+    (setq company-lsp-cache-candidates 'auto)
+    :config
+    (setq company-lsp-filter-candidates t))
 #+END_SRC
