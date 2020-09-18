@@ -12,7 +12,16 @@
     ;;install use package
     (unless (package-installed-p 'use-package)
       (package-refresh-contents)
-      (package-install 'use-package))				 
+      (package-install 'use-package))
+      
+      ;;load shell variables, this is required for MAC
+      (use-package exec-path-from-shell                                      
+  :ensure t                                                            
+  :if (memq window-system '(mac ns x))                                 
+  :config                                                              
+  (setq exec-path-from-shell-variables '("PATH" "GOPATH" "GO111MODULE")
+  (exec-path-from-shell-initialize))                                   
+      
 #+END_SRC
 *** ORG Mode
 #+BEGIN_SRC emacs-lisp
