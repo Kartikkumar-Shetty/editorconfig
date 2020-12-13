@@ -1,93 +1,92 @@
 * Configurations
-** Init packages 
+** Init packages
 *** Init packages
 #+BEGIN_SRC emacs-lisp
     ;;initialize all the packages
     (require 'package)
-    (add-to-list 'package-archives			           
-                 '("melpa" . "https://melpa.org/packages/")) 
-    (package-initialize)	
-    (setq package-enable-at-startup nil)		  		      
+    (add-to-list 'package-archives
+                 '("melpa" . "https://melpa.org/packages/"))
+    (package-initialize)
+    (setq package-enable-at-startup nil)
     (setq inhibit-startup-message t)
     ;;install use package
     (unless (package-installed-p 'use-package)
       (package-refresh-contents)
       (package-install 'use-package))
-      
-      ;;load shell variables, this is required for MAC
-      (use-package exec-path-from-shell                                      
-  :ensure t                                                            
-  :if (memq window-system '(mac ns x))                                 
-  :config                                                              
-  (setq exec-path-from-shell-variables '("PATH" "GOPATH" "GO111MODULE")
-  (exec-path-from-shell-initialize))                                   
-      
+(use-package exec-path-from-shell
+  :ensure t
+  :if (memq window-system '(mac ns x))
+  :config
+  (setq exec-path-from-shell-variables '("PATH" "GOPATH" "GO111MODULE"))
+  (exec-path-from-shell-initialize))
 #+END_SRC
 *** ORG Mode
 #+BEGIN_SRC emacs-lisp
-;;use melpa as my package manager			   
-	       (require 'org)						      
-	       ;;enable orgmode bullets					      
-	       (use-package org-bullets					      
-	       :ensure t							      
-	       :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode)))) 
-	       
+;;use melpa as my package manager
+	       (require 'org)
+	       ;;enable orgmode bullets
+	       (use-package org-bullets
+	       :ensure t
+	       :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+
 	       ;; org mode templates ;;use <el to invoke this template;;TODO: not working
 	       (setq org-src-window-setup 'current-window)
 	       (add-to-list 'org-structure-template-alist
 	       '("el" "#+BEGIN_SRC emacs-lisp \n?\n#+END_SRC"))
-	       
+
 	       (add-hook 'org-mode-hook 'org-indent-mode)
 #+END_SRC
 *** remove toolbars and menus, disable bell, scrollbars
 #+BEGIN_SRC emacs-lisp
-;Remove the toolbar and menubar
-  (tool-bar-mode -1)		 
-  (menu-bar-mode -1)
-  ;;disable ring bell function
-  (setq ring-bell-function 'ignore)
-  ;;scrolling os too much, lets reduce it to scroll line by line
-  (setq scroll-conservatively 100)				
-  (scroll-bar-mode -1)
+    ;Remove the toolbar and menubar
+      (tool-bar-mode -1)
+      (menu-bar-mode -1)
+      ;;disable ring bell function
+      (setq ring-bell-function 'ignore)
+      ;;scrolling os too much, lets reduce it to scroll line by line
+      (setq scroll-conservatively 100)
+      (scroll-bar-mode -1)
+    (setq-default cursor-type 'bar)
+  (when window-system (global-hl-line-mode t))
 #+END_SRC
 
 ** IDO
 *** IDO
-#+BEGIN_SRC emacs-lisp                             
+#+BEGIN_SRC emacs-lisp
 ;;this allow you to browse through files on C-x b
-;;  (setq ido-enable-flex-matching nil)            
-;;  (setq ido-create-new-buffer 'always)           
-;;  (setq ido-everywhere t)                        
-;;  (ido-mode 1)                                   
+;;  (setq ido-enable-flex-matching nil)
+;;  (setq ido-create-new-buffer 'always)
+;;  (setq ido-everywhere t)
+;;  (ido-mode 1)
 
 #+END_SRC
 
 *** IDO Vertical mode
 #+BEGIN_SRC emacs-lisp
-  ;;NOTE: Check alternates											           
-  ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs     
- ;; (use-package ido-vertical-mode										       	   
-  ;;  :ensure t													       	   
-  ;;  :init														   
-  ;;  (ido-vertical-mode 1)												   
+  ;;NOTE: Check alternates
+  ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs
+ ;; (use-package ido-vertical-mode
+  ;;  :ensure t
+  ;;  :init
+  ;;  (ido-vertical-mode 1)
   ;;  (setq ido-vertical-define-keys 'C-n-and-C-p-only));;this allows us to traverse through files using up and down chords
-  ;;(global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer         
+  ;;(global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer
 #+END_SRC
 ** IBuffer opening and expert killing
 *** display ibuffer for opening buffer window
-#+BEGIN_SRC emacs-lisp												       
-  ;;open the buffer list in a new window and dont use ido for it, use ibuffer, the window opens opn C-x b	       
+#+BEGIN_SRC emacs-lisp
+  ;;open the buffer list in a new window and dont use ido for it, use ibuffer, the window opens opn C-x b
   (global-set-key (kbd "C-x b") 'ibuffer)
   ;;dont ask for confirmation everytime i kill a buffer in the ibuffer buffer
-  (setq ibuffer-expert t)					       
-#+END_SRC													       
+  (setq ibuffer-expert t)
+#+END_SRC
 *** Kill buffer without asking for buffer name
-#+BEGIN_SRC emacs-lisp						  
-  ;; on C-x K kill the buffer dont ask from list of buffer name	  
-  (defun kill-curr-buffer()					  
-    (interactive)						  
-    (kill-buffer (current-buffer)))				  
-  (global-set-key (kbd "C-x k") 'kill-curr-buffer)		  
+#+BEGIN_SRC emacs-lisp
+  ;; on C-x K kill the buffer dont ask from list of buffer name
+  (defun kill-curr-buffer()
+    (interactive)
+    (kill-buffer (current-buffer)))
+  (global-set-key (kbd "C-x k") 'kill-curr-buffer)
 #+END_SRC
 *** kill all buffers
 #+BEGIN_SRC emacs-lisp
@@ -116,7 +115,7 @@
   (use-package avy
   :ensure t
   :bind
-  ("M-s" . avy-goto-char))
+  ("C-'" . avy-goto-char-2))
 #+END_SRC
 ** Custom config open and reload functions
 #+BEGIN_SRC emacs-lisp
@@ -135,6 +134,14 @@
 
   (global-set-key (kbd "C-c r") 'config-reload)
 #+END_SRC
+** Beacon highlight the line with cusrosor on buffer switch
+#+BEGIN_SRC emacs-lisp
+  ;;show a beacon where the cusrsor is present
+  (use-package beacon
+    :ensure t
+    :init
+    (beacon-mode 1))
+#+END_SRC
 ** Rainbow
 #+BEGIN_SRC emacs-lisp
   ;;this highlights the background of a hex code color code
@@ -144,32 +151,32 @@
 #+END_SRC
 ** Switch Windows Settings
 *** Switch Window
-#+BEGIN_SRC emacs-lisp																	      
-    ;;window navigation- switch window															      
-    (use-package switch-window																      
-    :ensure t																		      
-    :config																		      
-    (setq switch-window-input-style 'minibuffer)													      
-    (setq switch-window-increase 4)															      
+#+BEGIN_SRC emacs-lisp
+    ;;window navigation- switch window
+    (use-package switch-window
+    :ensure t
+    :config
+    (setq switch-window-input-style 'minibuffer)
+    (setq switch-window-increase 4)
     (setq switch-window-threshold 1);;this shows window labels on C-x o when the number of windows is greater than 3; keeping it 1 to allow resize shortcuts
-    :bind																		      
+    :bind
       ([remap other-window] . switch-window))    ;;remap the other window function to switch window
 #+END_SRC
 *** Split Window function and shortcuts
-#+BEGIN_SRC emacs-lisp										   
-    ;; custom function : when I split the window, the cursor should go to the newly created window 
-    (defun split-and-follow-horizontally()							   
-    (interactive)										   
-    (split-window-below)									   
-    (balance-windows)										   
-    (other-window 1))				   
-    (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)							   
-    ;; custom function : when I split the window, the cursor should go to the newly created window 
-    (defun split-and-follow-vertically()							   
-    (interactive)										   
-    (split-window-right)									   
-    (balance-windows)										   
-    (other-window 1))					   
+#+BEGIN_SRC emacs-lisp
+    ;; custom function : when I split the window, the cursor should go to the newly created window
+    (defun split-and-follow-horizontally()
+    (interactive)
+    (split-window-below)
+    (balance-windows)
+    (other-window 1))
+    (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+    ;; custom function : when I split the window, the cursor should go to the newly created window
+    (defun split-and-follow-vertically()
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
     (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 #+END_SRC
 *** Navigate through open buffers
@@ -179,7 +186,7 @@
   (global-set-key (kbd "C-c <left>") 'windmove-left)
   (global-set-key (kbd "C-c <right>") 'windmove-right)
 #+END_SRC
-*** resize window
+*** Resize window
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-s-<down>") 'shrink-window)
   (global-set-key (kbd "C-s-<up>") 'enlarge-window)
@@ -189,11 +196,11 @@
 ** Search, Navigation using smex
 *** smex
 #+BEGIN_SRC emacs-lisp
-  ;;install smex, this allow us with option-x to view various command options					      
-  (use-package smex												      
-    :ensure t													      
-    :init (smex-initialize)											      
-    :bind													      
+  ;;install smex, this allow us with option-x to view various command options
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind
     ("M-x" . smex))
 #+END_SRC
 ** Text Editing & Parsing settings, hungry delete
@@ -235,9 +242,16 @@
     (save-excursion
       (kill-new (buffer-substring (point-at-bol) (point-at-eol)))))
   (global-set-key (kbd "C-c w l") 'copy-whole-line)
+
+  ;; C-c w e copy rest of the line
+    (defun copy-line-to-endofline()
+      (interactive)
+      (save-excursion
+        (kill-new (buffer-substring (point) (point-at-eol)))))
+    (global-set-key (kbd "C-c w e") 'copy-line-to-endofline)
 #+END_SRC
 
-*** kill ring- multiple 
+*** kill ring- multiple
 #+BEGIN_SRC emacs-lisp
   (use-package popup-kill-ring
     :ensure t
@@ -290,10 +304,10 @@
 #+END_SRC
 *** rainbow delimiters
 #+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-  :ensure t
-  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-  (show-paren-mode 1))
+  ;; (use-package rainbow-delimiters
+  ;; :ensure t
+  ;; :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+  ;; (show-paren-mode 1))
 #+END_SRC
 *** Autocomplete
 #+BEGIN_SRC emacs-lisp
@@ -330,6 +344,7 @@
    (global-set-key (kbd "C-c .") 'comment-line)
 #+END_SRC
 *** Indentation highlighting
+
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indent-guides
     :ensure t)
@@ -338,6 +353,22 @@
   (setq highlight-indent-guides-auto-odd-face-perc 25)
   (setq highlight-indent-guides-auto-even-face-perc 25)
   (setq highlight-indent-guides-auto-character-face-perc 25)
+#+END_SRC
+*** IMenu
+#+BEGIN_SRC emacs-lisp
+(use-package imenu-list
+  :ensure t
+  :bind (("C-." . imenu-list-smart-toggle))
+  :config
+  (setq imenu-list-focus-after-activation t
+        imenu-list-auto-resize nil))
+#+END_SRC
+*** highlight parenthesis
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-parentheses
+  :ensure t)
+  (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
+  (highlight-parentheses-mode)
 #+END_SRC
 ** Modeline
 *** Show line numbers
@@ -376,49 +407,49 @@
     ("s-h" . symon-mode))
 #+END_SRC
 ** IVY Swiper and Counsel(Add this at the end of file)
-   #+BEGIN_SRC emacs-lisp																							
-       ;;ivy is use as a replacement for ido								
-     (use-package ivy									
-       :ensure t								
-       :init (ivy-mode 1)									
-       (setq ivy-use-virtual-buffers t)								
+   #+BEGIN_SRC emacs-lisp
+       ;;ivy is use as a replacement for ido
+     (use-package ivy
+       :ensure t
+       :init (ivy-mode 1)
+       (setq ivy-use-virtual-buffers t)
        (setq enable-recursive-minibuffers t)
        )
-     ;;use ivy to switch buffers in the the mini buffer									
+     ;;use ivy to switch buffers in the the mini buffer
      (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer
 
      ;;swiper: this provides a better search functionality, dependent on ivy package
      ;;use swiper for searching C-s
-     (use-package swiper							
-       :ensure t								
-       :bind("C-s" . 'swiper)									
+     (use-package swiper
+       :ensure t
+       :bind("C-s" . 'swiper)
        )
-     ;;use counsel for command fuzzy search								
-     (use-package counsel						
-       :ensure t								
+     ;;use counsel for command fuzzy search
+     (use-package counsel
+       :ensure t
        :init (counsel-mode 1))
        ;;add this at the end of file; else M-x bindings gets overidden
-     (global-set-key (kbd "M-x") 'counsel-M-x)	
-   #+END_SRC																								
+     (global-set-key (kbd "M-x") 'counsel-M-x)
+   #+END_SRC
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
-  ;;project-explorer installation
-  (use-package treemacs
-    :ensure t
-    :bind
-  ("M-p" . treemacs))
+    ;;project-explorer installation
+    (use-package treemacs
+      :ensure t
+      :bind
+    ("M-p" . treemacs)
+    ("M-0" . treemacs-select-window))
 
 
-  (setq treemacs-filewatch-mode t)
-  (setq treemacs-indentation-string " ")
-  (setq treemacs-no-png-images t)
-  (setq treemacs-fringe-indicator-mode t)
-  (setq treemacs-git-mode 'extended)
-  (setq treemacs-show-hidden-files t)
-  (setq treemacs-sorting 'alphabetic-asc)
-  (setq treemacs-recenter-after-file-follow t)
-  (setq split-width-threshold 0)
-  (setq treemacs-position 'right)
+    (setq treemacs-filewatch-mode t)
+    (setq treemacs-indentation-string " ")
+    (setq treemacs-fringe-indicator-mode t)
+    (setq treemacs-git-mode 'extended)
+    (setq treemacs-show-hidden-files t)
+    (setq treemacs-sorting 'alphabetic-asc)
+    (setq treemacs-recenter-after-file-follow t)
+    (setq split-width-threshold 0)
+    (setq treemacs-position 'right)
 #+END_SRC
 ** Cassandra
 #+BEGIN_SRC emacs-lisp
@@ -478,7 +509,7 @@
 #+END_SRC
 ** Display File name at the top
 #+BEGIN_SRC emacs-lisp
-  ;;Display file path in the title bar 
+  ;;Display file path in the title bar
   (setq frame-title-format
     '(:eval
       (if buffer-file-name
@@ -498,20 +529,22 @@
        (setenv "ENV" "$HOME/.profile")
        (setq tramp-remote-process-environment process-environment))
 #+END_SRC
-** GO debugger
-#+BEGIN_SRC emacs-lisp
-  (use-package go-dlv
-  :ensure t)
-#+END_SRC
 ** GO Mode
 #+BEGIN_SRC emacs-lisp
-  (use-package go-mode
-  :defer t
-  :ensure t
-  :mode ("\\.go\\'" . go-mode))
+      (use-package go-mode
+      :ensure t)
+      (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+(add-hook 'go-mode-hook 'go-imenu-setup)
+#+END_SRC
+** GO IMenu
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'go-imenu)
+  (package-refresh-contents)
+  (package-install 'go-imenu))
+  (add-hook 'go-mode-hook 'go-imenu-setup)
 #+END_SRC
 ** LSP
-*** lsp mode(enabled for GO mode)
+*** LSP mode(enabled for GO mode)
 #+BEGIN_SRC emacs-lisp
 ;;lsp go mode
 
@@ -529,18 +562,22 @@
 #+END_SRC
 *** LSP UI
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-ui
-  :ensure t)
-(define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-(define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+    (use-package lsp-ui
+    :ensure t)
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  (setq lsp-ui-sideline-show-code-actions t)
+  (global-set-key (kbd "C-c a") 'lsp-ui-sideline-apply-code-actions)
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-max-height 20)
 #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t)
   (global-flycheck-mode)
-  (package-install 'exec-path-from-shell)
-  (exec-path-from-shell-initialize)
+  ;;(package-install 'exec-path-from-shell)
+  ;;(exec-path-from-shell-initialize)
 #+END_SRC
 *** lsp ivy
 #+BEGIN_SRC emacs-lisp
@@ -549,13 +586,13 @@
 #+END_SRC
 *** lsp dap mpde for debugging
 #+BEGIN_SRC emacs-lisp
-  (use-package dap-mode
-:ensure t)
+ ; (use-package dap-mode
+;;:ensure t)
 #+END_SRC
 *** company mode(already installed)
 *** lsp treemacs
 #+BEGIN_SRC emacs-lisp
-(lsp-treemacs-sync-mode 1)
+;;(lsp-treemacs-sync-mode 1)
 #+END_SRC
 *** lsp configurations
 #+BEGIN_SRC emacs-lisp
@@ -573,4 +610,157 @@
     (setq company-lsp-cache-candidates 'auto)
     :config
     (setq company-lsp-filter-candidates t))
+#+END_SRC
+
+*** GO PLS configurations
+#+BEGIN_SRC emacs-lisp
+;;(setq lsp-go-hover-kind "FullDocumentation")
+#+END_SRC
+** GO debugger
+#+BEGIN_SRC emacs-lisp
+;;;  (use-package go-dlv
+ ;; :ensure t)
+#+END_SRC
+** GO Mode
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+** Go Configurations
+*** Go Direx
+#+BEGIN_SRC emacs-lisp
+;;  go get -u github.com/jstemmer/gotags
+  (use-package direx
+  :ensure t)
+  (global-set-key (kbd "C-x C-j") 'direx:jump-to-directory)
+ ;; install go tags
+
+  (use-package go-direx
+    :ensure t)
+  (define-key go-mode-map (kbd "C-x C-j") 'go-direx-pop-to-buffer)
+
+
+  (use-package popwin
+    :ensure t)
+  (push '("^\*go-direx:" :regexp t :position right :width 0.4 :dedicated t :stick t)
+        popwin:special-display-config)
+#+END_SRC
+*** Go fill struct
+#+BEGIN_SRC emacs-lisp
+;;(use-package go-fill-struct
+;; :ensure t)
+#+END_SRC
+*** Go Generate Test
+#+BEGIN_SRC emacs-lisp
+     ;Installs go-gen-test which generates test functions for the selcted functions
+     ;;go get -u github.com/cweill/gotests/...
+  (use-package gotest
+    :ensure t)
+  (use-package go-gen-test
+    :ensure t)
+#+END_SRC
+*** Go Imports
+#+BEGIN_SRC emacs-lisp
+ ;; (use-package go-imports
+ ;; :ensure t)
+;;(setq go-save-hook #'goimports-before-save)
+#+END_SRC
+*** Go Guru
+#+BEGIN_SRC emacs-lisp
+  ;;install go guru and go eldoc using go get and emacs package
+  (use-package go-guru
+    :ensure t)
+    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+;;use-go-mode-set-scope github.com/...   to specificy package scope usually a path to your project
+#+END_SRC
+*** Go eldoc
+#+BEGIN_SRC emacs-lisp
+;;show function paremeters in the minibuffer
+(use-package go-eldoc
+:ensure t) ;; Don't need to require, if you install by package.el
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+(set-face-attribute 'eldoc-highlight-function-argument nil
+                    :underline t
+                    :weight 'bold)
+#+END_SRC
+*** Go fill struct
+#+BEGIN_SRC emacs-lisp
+(use-package go-fill-struct
+:ensure t)
+#+END_SRC
+** Tramp
+#+BEGIN_SRC emacs-lisp
+(require 'tramp)
+(defvar tramp-remote-path nil)
+(setq tramp-remote-path "~/src/go/bin")
+(setq tramp-remote-path "/usr/local/go/bin")
+
+(custom-set-variables  '(tramp-remote-path
+    (quote
+     (tramp-own-remote-path))))
+
+;;(let ((process-environment tramp-remote-process-environment))
+;;       (setenv "ENV" "$HOME/.profile")
+;;       (setq tramp-remote-process-environment process-environment))
+
+(lsp-register-client
+    (make-lsp-client :new-connection (lsp-tramp-connection "gopls")
+                     :major-modes '(go-mode)
+                     :remote? t
+                     :server-id 'gopls-remote))
+
+#+END_SRC
+** DAP Mode
+#+BEGIN_SRC emacs-lisp
+;;    (setq package-archives '(("melpa" . "http://melpa.org/packages/")
+ ;;   ("gnu" . "http://elpa.gnu.org/packages/")
+  ;;                      ("marmalade" . "http://marmalade-repo.org/packages/")))
+(use-package dap-mode
+:ensure t)
+(require 'dap-go)
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
+
+(dap-mode 1)
+
+;; The modes below are optional
+
+(dap-ui-mode 1)
+;; enables mouse hover support
+(dap-tooltip-mode 1)
+;; use tooltips for mouse hover
+;; if it is not enabled `dap-mode' will use the minibuffer.
+(tooltip-mode 1)
+;; displays floating panel with debug buttons
+;; requies emacs 26+
+(dap-ui-controls-mode 1)
+
+#+END_SRC
+** DOOM Theme
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons
+  :ensure t)
+  ;;run installation after this
+
+  (insert (all-the-icons-icon-for-file "foo.go"))
+  (use-package treemacs-all-the-icons
+  :ensure t
+  :after treemacs)
+  (treemacs-load-theme "all-the-icons")
+
+  (use-package doom-themes
+  :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-wilmersdorf t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+
+    (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+    (doom-themes-treemacs-config)
+
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
 #+END_SRC
