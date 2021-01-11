@@ -1,18 +1,18 @@
 * Configurations
-** Init packages
+** Init packages 
 *** Init packages
 #+BEGIN_SRC emacs-lisp
     ;;initialize all the packages
     (require 'package)
-    (add-to-list 'package-archives
-                 '("melpa" . "https://melpa.org/packages/"))
-    (package-initialize)
-    (setq package-enable-at-startup nil)
+    (add-to-list 'package-archives			           
+                 '("melpa" . "https://melpa.org/packages/")) 
+    (package-initialize)	
+    (setq package-enable-at-startup nil)		  		      
     (setq inhibit-startup-message t)
     ;;install use package
     (unless (package-installed-p 'use-package)
       (package-refresh-contents)
-      (package-install 'use-package))
+      (package-install 'use-package))				 
 (use-package exec-path-from-shell
   :ensure t
   :if (memq window-system '(mac ns x))
@@ -22,71 +22,81 @@
 #+END_SRC
 *** ORG Mode
 #+BEGIN_SRC emacs-lisp
-;;use melpa as my package manager
-	       (require 'org)
-	       ;;enable orgmode bullets
-	       (use-package org-bullets
-	       :ensure t
-	       :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
-
+;;use melpa as my package manager			   
+	       (require 'org)						      
+	       ;;enable orgmode bullets					      
+	       (use-package org-bullets					      
+	       :ensure t							      
+	       :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode)))) 
+	       
 	       ;; org mode templates ;;use <el to invoke this template;;TODO: not working
 	       (setq org-src-window-setup 'current-window)
 	       (add-to-list 'org-structure-template-alist
 	       '("el" "#+BEGIN_SRC emacs-lisp \n?\n#+END_SRC"))
-
+	       
 	       (add-hook 'org-mode-hook 'org-indent-mode)
 #+END_SRC
 *** remove toolbars and menus, disable bell, scrollbars
 #+BEGIN_SRC emacs-lisp
-    ;Remove the toolbar and menubar
-      (tool-bar-mode -1)
-      (menu-bar-mode -1)
-      ;;disable ring bell function
-      (setq ring-bell-function 'ignore)
-      ;;scrolling os too much, lets reduce it to scroll line by line
-      (setq scroll-conservatively 100)
-      (scroll-bar-mode -1)
-    (setq-default cursor-type 'bar)
+  ;;Remove the toolbar and menubar
+  (tool-bar-mode -1)		 
+  (menu-bar-mode -1)
+  ;;disable ring bell function
+  (setq ring-bell-function 'ignore)
+  ;;scrolling os too much, lets reduce it to scroll line by line
+  (setq scroll-conservatively 100)				
+  (scroll-bar-mode -1)
+  (setq-default cursor-type 'bar)
   (when window-system (global-hl-line-mode t))
+  ;disable backup
+  (setq backup-inhibited t)
+  ;disable auto save
+  (setq auto-save-default nil)
+
+  (global-set-key "\M-n"  (lambda () (interactive) (scroll-up 2)))
+  (global-set-key "\M-p"  (lambda () (interactive) (scroll-down 2)))
+
+  (global-set-key (kbd "M-<down>")  (lambda () (interactive) (scroll-up 2)))
+  (global-set-key (kbd "M-<up>")  (lambda () (interactive) (scroll-down 2)))
 #+END_SRC
 
 ** IDO
 *** IDO
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp                             
 ;;this allow you to browse through files on C-x b
-;;  (setq ido-enable-flex-matching nil)
-;;  (setq ido-create-new-buffer 'always)
-;;  (setq ido-everywhere t)
-;;  (ido-mode 1)
+;;  (setq ido-enable-flex-matching nil)            
+;;  (setq ido-create-new-buffer 'always)           
+;;  (setq ido-everywhere t)                        
+;;  (ido-mode 1)                                   
 
 #+END_SRC
 
 *** IDO Vertical mode
 #+BEGIN_SRC emacs-lisp
-  ;;NOTE: Check alternates
-  ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs
- ;; (use-package ido-vertical-mode
-  ;;  :ensure t
-  ;;  :init
-  ;;  (ido-vertical-mode 1)
+  ;;NOTE: Check alternates											           
+  ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs     
+ ;; (use-package ido-vertical-mode										       	   
+  ;;  :ensure t													       	   
+  ;;  :init														   
+  ;;  (ido-vertical-mode 1)												   
   ;;  (setq ido-vertical-define-keys 'C-n-and-C-p-only));;this allows us to traverse through files using up and down chords
-  ;;(global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer
+  ;;(global-set-key (kbd "C-x C-b") 'ido-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer         
 #+END_SRC
 ** IBuffer opening and expert killing
 *** display ibuffer for opening buffer window
-#+BEGIN_SRC emacs-lisp
-  ;;open the buffer list in a new window and dont use ido for it, use ibuffer, the window opens opn C-x b
+#+BEGIN_SRC emacs-lisp												       
+  ;;open the buffer list in a new window and dont use ido for it, use ibuffer, the window opens opn C-x b	       
   (global-set-key (kbd "C-x b") 'ibuffer)
   ;;dont ask for confirmation everytime i kill a buffer in the ibuffer buffer
-  (setq ibuffer-expert t)
-#+END_SRC
+  (setq ibuffer-expert t)					       
+#+END_SRC													       
 *** Kill buffer without asking for buffer name
-#+BEGIN_SRC emacs-lisp
-  ;; on C-x K kill the buffer dont ask from list of buffer name
-  (defun kill-curr-buffer()
-    (interactive)
-    (kill-buffer (current-buffer)))
-  (global-set-key (kbd "C-x k") 'kill-curr-buffer)
+#+BEGIN_SRC emacs-lisp						  
+  ;; on C-x K kill the buffer dont ask from list of buffer name	  
+  (defun kill-curr-buffer()					  
+    (interactive)						  
+    (kill-buffer (current-buffer)))				  
+  (global-set-key (kbd "C-x k") 'kill-curr-buffer)		  
 #+END_SRC
 *** kill all buffers
 #+BEGIN_SRC emacs-lisp
@@ -105,9 +115,6 @@
 #+END_SRC
 ** GUI Theme
 #+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'afternoon-theme)
-    (package-refresh-contents)
-    (package-install 'afternoon-theme))
  #+END_SRC
 ** Avy
 #+BEGIN_SRC emacs-lisp
@@ -115,7 +122,7 @@
   (use-package avy
   :ensure t
   :bind
-  ("C-'" . avy-goto-char-2))
+  ("C-;" . avy-goto-char-2))
 #+END_SRC
 ** Custom config open and reload functions
 #+BEGIN_SRC emacs-lisp
@@ -304,10 +311,10 @@
 #+END_SRC
 *** rainbow delimiters
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package rainbow-delimiters
-  ;; :ensure t
-  ;; :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-  ;; (show-paren-mode 1))
+  (use-package rainbow-delimiters
+  :ensure t
+  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+  (show-paren-mode 1))
 #+END_SRC
 *** Autocomplete
 #+BEGIN_SRC emacs-lisp
@@ -344,7 +351,6 @@
    (global-set-key (kbd "C-c .") 'comment-line)
 #+END_SRC
 *** Indentation highlighting
-
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indent-guides
     :ensure t)
@@ -433,23 +439,23 @@
    #+END_SRC
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
-    ;;project-explorer installation
-    (use-package treemacs
-      :ensure t
-      :bind
-    ("M-p" . treemacs)
-    ("M-0" . treemacs-select-window))
+  ;;project-explorer installation
+  (use-package treemacs
+    :ensure t
+    :bind
+  ("M-p" . treemacs)
+  ("M-0" . treemacs-select-window))
 
 
-    (setq treemacs-filewatch-mode t)
-    (setq treemacs-indentation-string " ")
-    (setq treemacs-fringe-indicator-mode t)
-    (setq treemacs-git-mode 'extended)
-    (setq treemacs-show-hidden-files t)
-    (setq treemacs-sorting 'alphabetic-asc)
-    (setq treemacs-recenter-after-file-follow t)
-    (setq split-width-threshold 0)
-    (setq treemacs-position 'right)
+  (setq treemacs-filewatch-mode t)
+  (setq treemacs-indentation-string " ")
+  (setq treemacs-fringe-indicator-mode t)
+  (setq treemacs-git-mode 'extended)
+  (setq treemacs-show-hidden-files t)
+  (setq treemacs-sorting 'alphabetic-asc)
+  (setq treemacs-recenter-after-file-follow t)
+  (setq split-width-threshold 0)
+  (setq treemacs-position 'right)
 #+END_SRC
 ** Cassandra
 #+BEGIN_SRC emacs-lisp
@@ -546,19 +552,35 @@
 ** LSP
 *** LSP mode(enabled for GO mode)
 #+BEGIN_SRC emacs-lisp
-;;lsp go mode
+    ;;lsp go mode
 
-;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
-  (use-package lsp-mode
-    :ensure t
-    :commands (lsp lsp-deferred)
-    :hook (go-mode . lsp-deferred))
+    ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
+    ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
+    (use-package lsp-mode
+            :ensure t
+            :commands (lsp lsp-deferred)
+            :hook (go-mode . lsp-deferred))
 
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+    (defun lsp-go-install-save-hooks ()
+              (add-hook 'before-save-hook #'lsp-format-buffer t t)
+              (add-hook 'before-save-hook #'lsp-organize-imports t t))
     (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
     (add-hook 'go-mode-hook #'lsp)
+
+    (setq lsp-headerline-breadcrumb-enable t)
+    (setq lsp-enable-symbol-highlighting nil)
+    (setq lsp-completion-provider :none)
+    (setq lsp-completion-show-detail t)
+    (setq lsp-completion-show-kind t)
+    (setq lsp-lens-enable t)
+    (setq lsp-ui-sideline-enable t)
+    (setq lsp-ui-sideline-show-code-actions t)
+    (setq lsp-ui-sideline-enable t)
+    (setq lsp-ui-sideline-show-hover nil)
+    (setq lsp-eldoc-enable-hover t)
+    (setq lsp-modeline-diagnostics-enable t)
+    (setq lsp-enable-semantic-highlighting nil)
 #+END_SRC
 *** LSP UI
 #+BEGIN_SRC emacs-lisp
@@ -570,6 +592,10 @@
   (global-set-key (kbd "C-c a") 'lsp-ui-sideline-apply-code-actions)
   (setq lsp-ui-doc-enable t)
   (setq lsp-ui-doc-max-height 20)
+  (setq lsp-ui-peek-enable t)
+  (setq lsp-ui-peek-show-directory t)
+  (setq lsp-ui-imenu-window-width 40)
+  (global-set-key (kbd "C-?") 'lsp-ui-imenu)
 #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp
@@ -737,30 +763,65 @@
 #+END_SRC
 ** DOOM Theme
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons
-  :ensure t)
-  ;;run installation after this
+     (use-package all-the-icons
+     :ensure t)
+     ;;run installation after this
 
-  (insert (all-the-icons-icon-for-file "foo.go"))
-  (use-package treemacs-all-the-icons
-  :ensure t
-  :after treemacs)
-  (treemacs-load-theme "all-the-icons")
+     ;; (insert (all-the-icons-icon-for-file "foo.go"))
+     (use-package treemacs-all-the-icons
+     :ensure t
+     :after treemacs)
+     (treemacs-load-theme "all-the-icons")
 
-  (use-package doom-themes
-  :ensure t
-    :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-wilmersdorf t)
+     (use-package doom-themes
+     :ensure t
+       :config
+       ;; Global settings (defaults)
+       (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+             doom-themes-enable-italic t) ; if nil, italics is universally disabled
+       (load-theme 'doom-tomorrow-night t)
 
-    ;; Enable flashing mode-line on errors
-    (doom-themes-visual-bell-config)
+       ;; Enable flashing mode-line on errors
+       (doom-themes-visual-bell-config)
 
-    (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-    (doom-themes-treemacs-config)
+       (setq doom-themes-treemacs-enable-variable-pitch nil);;disable soom overriding treemacs font size
 
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
+       (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+       (doom-themes-treemacs-config)
+
+       ;; Corrects (and improves) org-mode's native fontification.
+       (doom-themes-org-config))
+      ;; (set-face-foreground 'linum "#FFFFFF")
+
+     (use-package doom-modeline
+       :ensure t
+       :init (doom-modeline-mode 1)
+       :hook (after-init . doom-modeline-mode))
+       (setq doom-modeline-project-detection 'project)
+       (setq doom-modeline-icon (display-graphic-p))
+       (setq doom-modeline-major-mode-icon t)
+       (setq doom-modeline-major-mode-color-icon t)
+       (setq doom-modeline-buffer-state-icon t)
+       (setq doom-modeline-buffer-modification-icon t)
+       (setq doom-modeline-minor-modes nil)
+       (setq doom-modeline-vcs-max-length 12)
+       (setq doom-modeline-workspace-name t)
+       (setq doom-modeline-lsp t)
+       (setq doom-modeline-env-version t)
+       (treemacs-resize-icons 44)
+  ;;(set-face-attribute 'hl-line nil :inherit nil :background "gray6")
+  (set-background-color "#070707")
+#+END_SRC
+** Make Mode
+#+BEGIN_SRC emacs-lisp
+(use-package make-mode
+:ensure t)
+#+END_SRC
+** JSON Mode
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode
+  :mode "\\.json\\'")
+#+END_SRC
+** Yaml Mode
+#+BEGIN_SRC emacs-lisp
 #+END_SRC
