@@ -1,4 +1,4 @@
-"."* Configurations
+* Configurations
 ** Init packages 
 *** Init packages
 #+BEGIN_SRC emacs-lisp
