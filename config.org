@@ -13,7 +13,7 @@
     (exec-path-from-shell-initialize))  		
     (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 #+END_SRC
-́*** ORG Mode
+*** ORG Mode
 #+BEGIN_SRC emacs-lisp
 ;;use melpa as my package manager			   
 	       (require 'org)						      
