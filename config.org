@@ -233,6 +233,12 @@
   ;;(setq display-line-numbers 'relative)
   (setq-default display-line-numbers 'relative)
   (fringe-mode '(4 . 4))
+  (defun custom-linum-background  ()
+  (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
+;;    (add-to-list 'default-frame-alist 'my-set-background-color)
+;;(add-hook 'after-make-frame-functions (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
+(add-hook 'prog-mode-hook 'custom-linum-background)
+
 #+END_SRC
 *** Replace yes and no with y or n
 #+BEGIN_SRC emacs-lisp
