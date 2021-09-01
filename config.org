@@ -2,16 +2,17 @@
 ** Init packages 
 *** Init packages
 #+BEGIN_SRC emacs-lisp
-      ;;initialize all the packages
-      (setq inhibit-startup-message t)
+    ;;initialize all the packages
+    (setq inhibit-startup-message t)
 
-    (use-package exec-path-from-shell
-    :ensure t
-    :if (memq window-system '(mac ns x))
-    :config
-    (setq exec-path-from-shell-variables '("PATH" "GOPATH" "GO111MODULE"))
-    (exec-path-from-shell-initialize))  		
-    (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+  (use-package exec-path-from-shell
+  :ensure t
+  :if (memq window-system '(mac ns x))
+  :config
+  (setq exec-path-from-shell-variables '("PATH" "GOPATH" "GO111MODULE"))
+  (exec-path-from-shell-initialize))  		
+  (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
 *** ORG Mode
 #+BEGIN_SRC emacs-lisp
@@ -107,9 +108,6 @@
     :init
     (which-key-mode))
 #+END_SRC
-** GUI Theme
-#+BEGIN_SRC emacs-lisp
- #+END_SRC
 ** Avy
 #+BEGIN_SRC emacs-lisp
   ;;enables you to search any character
@@ -232,13 +230,14 @@
   ;;(setq linum-format "%3d \u2502")
   ;;(setq display-line-numbers 'relative)
   (setq-default display-line-numbers 'relative)
-  (fringe-mode '(4 . 4))
+  (fringe-mode '(15 . 10))
   (defun custom-linum-background  ()
-  (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
-;;    (add-to-list 'default-frame-alist 'my-set-background-color)
-;;(add-hook 'after-make-frame-functions (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
-(add-hook 'prog-mode-hook 'custom-linum-background)
-
+      (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
+  ;;    (add-to-list 'default-frame-alist 'my-set-background-color)
+  ;;(add-hook 'after-make-frame-functions (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
+  (add-hook 'prog-mode-hook 'custom-linum-background)
+  (setq left-fringe-width 20)
+  ;;(set-window-fringes nil 15 10)
 #+END_SRC
 *** Replace yes and no with y or n
 #+BEGIN_SRC emacs-lisp
@@ -449,34 +448,6 @@
        ;;add this at the end of file; else M-x bindings gets overidden
      (global-set-key (kbd "M-x") 'counsel-M-x)
    #+END_SRC
-** Treemacs
-#+BEGIN_SRC emacs-lisp
-  ;; project-explorer installation
-   (use-package treemacs
-     :ensure t
-     :bind
-   ("M-p" . treemacs)
-   ("M-0" . treemacs-select-window)
-   )
-   (setq treemacs-icons-dired-mode nil)
-   (setq treemacs-filewatch-mode t)
-   (setq treemacs-indentation-string " ")
-   (setq treemacs-fringe-indicator-mode t)
-   (setq treemacs-git-mode 'extended)
-   (setq treemacs-show-hidden-files t)
-   (setq treemacs-sorting 'alphabetic-asc)
-   (setq treemacs-recenter-after-file-follow t)
-   (setq split-width-threshold 0)
-   (setq treemacs-position 'right)
-   (setq treemacs-no-png-images t)
-#+END_SRC
-** Treemacs Lsp
-#+BEGIN_SRC emacs-lisp
-      (use-package lsp-treemacs
-      :ensure t
-      :config
-      (lsp-treemacs-sync-mode 1))
-#+END_SRC
 ** Cassandra
 #+BEGIN_SRC emacs-lisp
   ;;Cassandra Plugin
@@ -521,7 +492,7 @@
     :config
     (setq indent-tab-mode t))
 #+END_SRC
-*** move the file backups to a different location
+** move the file backups to a different location
 #+BEGIN_SRC emacs-lisp
   ;;Save backup file at a different location
   (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
@@ -555,63 +526,46 @@
        (setenv "ENV" "$HOME/.profile")
        (setq tramp-remote-process-environment process-environment))
 #+END_SRC
-** GO Mode
-#+BEGIN_SRC emacs-lisp
-      (use-package go-mode
-      :ensure t)
-      (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-(add-hook 'go-mode-hook 'go-imenu-setup)
-#+END_SRC
-** GO IMenu
-#+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'go-imenu)
-  (package-refresh-contents)
-  (package-install 'go-imenu))
-  (add-hook 'go-mode-hook 'go-imenu-setup)
-#+END_SRC
 ** LSP
 *** LSP mode(enabled for GO mode)
 #+BEGIN_SRC emacs-lisp
-  ;;lsp go mode
+    ;;lsp go mode
 
-  ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
-  ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
-  (use-package lsp-mode
-      :ensure t
-            :commands (lsp lsp-deferred lsp-format-buffer lsp-organize-imports)
-            :hook (go-mode . lsp-deferred))
+    ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
+    ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
 
+    (setq-default lsp-headerline-breadcrumb-enable t)
+    (setq lsp-enable-symbol-highlighting t)
+    ;;(setq lsp-completion-provider :none)
+    (setq-default lsp-completion-show-detail t)
+    (setq-default lsp-completion-show-kind t)
+    (setq-default lsp-lens-enable t)
+    (setq-default lsp-ui-sideline-enable t)
+    (setq-default lsp-ui-sideline-show-code-actions t)
+    (setq-default lsp-ui-sideline-enable t)
+    (setq-default lsp-ui-sideline-show-hover nil)
+    (setq-default lsp-eldoc-enable-hover t)
+    (setq-default lsp-modeline-diagnostics-enable t)
+    (setq-default lsp-enable-semantic-highlighting nil)
+    (setq-default lsp-enable-snippet t)
 
-  (defun lsp-go-install-save-hooks ()
-      (add-hook 'before-save-hook #'lsp-format-buffer t t)
-              (add-hook 'before-save-hook #'lsp-organize-imports t t))
-  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-  (add-hook 'go-mode-hook #'lsp)
-
-  (setq-default lsp-headerline-breadcrumb-enable t)
-  (setq lsp-enable-symbol-highlighting t)
-  ;;(setq lsp-completion-provider :none)
-  (setq-default lsp-completion-show-detail t)
-  (setq-default lsp-completion-show-kind t)
-  (setq-default lsp-lens-enable t)
-  (setq-default lsp-ui-sideline-enable t)
-  (setq-default lsp-ui-sideline-show-code-actions t)
-  (setq-default lsp-ui-sideline-enable t)
-  (setq-default lsp-ui-sideline-show-hover nil)
-  ;;(setq-default lsp-eldoc-enable-hover t)
-  (setq-default lsp-modeline-diagnostics-enable t)
-  (setq-default lsp-enable-semantic-highlighting nil)
-  (setq-default lsp-enable-snippet t)
-
-  (setq-default lsp-lens-enable t)
-  (setq-default lsp-signature-auto-activate t)
-  (setq-default lsp-signature-doc-lines 1)
-  (setq-default lsp-lens-place-position 'above-line)
-  (setq-default lsp-modeline-workspace-status-enable t)
-  (set-face-attribute 'lsp-face-highlight-textual nil
-                    :background "#474747")
-  (with-eval-after-load 'lsp-mode
-    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+    (setq-default lsp-lens-enable t)
+    (setq-default lsp-signature-auto-activate t)
+    (setq-default lsp-signature-doc-lines 1)
+    (setq-default lsp-signature-render-documentation nil)
+    (setq-default lsp-lens-place-position 'above-line)
+    (setq-default lsp-modeline-workspace-status-enable t)
+    ;;(set-face-attribute 'lsp-face-highlight-textual nil
+    ;;                    :background "#474747")
+    (with-eval-after-load 'lsp-mode
+      (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+    (setq-default lsp-ui-doc-position 'right)
+    (setq-default lsp-eldoc-render-all nil)
+  (setq-default lsp-modeline-code-actions-enable t)
+#+END_SRC
+*** LSP Ivy
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 #+END_SRC
 *** LSP UI
 #+BEGIN_SRC emacs-lisp
@@ -629,35 +583,28 @@
   (global-set-key (kbd "C-?") 'lsp-ui-imenu)
 (setq-default lsp-enable-symbol-highlighting t)
 #+END_SRC
-*** flycheck
+** dap mode for debugging
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t)
-  (global-flycheck-mode)
-  ;;(package-install 'exec-path-from-shell)
-  ;;(exec-path-from-shell-initialize)
-#+END_SRC
-*** lsp ivy
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-  ;;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
-#+END_SRC
-*** lsp dap mpde for debugging
-#+BEGIN_SRC emacs-lisp
-
-    (use-package dap-mode
-      :ensure t
-      :commands dap-mode
-      :hook (dap-stopped . (lambda (arg) (call-interactively #'dap-hydra)))
-      :config
-      (dap-mode 1)
-      (require 'dap-ui)
-      (dap-ui-mode 1)
-      (require 'dap-lldb))
 
   (use-package dap-mode
-    :ensure t)
-    (setq dap-auto-configure-features '(sessions locals controls tooltip))
+    :ensure t
+    :commands dap-mode
+    :hook (dap-stopped . (lambda (arg) (call-interactively #'dap-hydra)))
+    :config
+    (dap-mode 1)
+    (require 'dap-ui)
+    (dap-ui-mode 1))
+  (setq dap-auto-configure-features '(sessions locals controls tooltip))
+  ; ;; The modes below are optional
+  (dap-ui-mode 1)
+  ;; ;; enables mouse hover support
+  (dap-tooltip-mode 1)
+  ;; ;; use tooltips for mouse hover
+  ;; ;; if it is not enabled `dap-mode' will use the minibuffer.
+  (tooltip-mode 1)
+  ;; ;; displays floating panel with debug buttons
+  ;; ;; requies emacs 26+
+  (dap-ui-controls-mode 1)
 #+END_SRC
 *** company mode(already installed)
 *** lsp treemacs
@@ -686,16 +633,37 @@
 #+BEGIN_SRC emacs-lisp
 ;;(setq lsp-go-hover-kind "FullDocumentation")
 #+END_SRC
-** GO debugger
+** GO
+*** GO Mode
 #+BEGIN_SRC emacs-lisp
-;;;  (use-package go-dlv
- ;; :ensure t)
+      (use-package go-mode
+      :ensure t)
+      (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+(add-hook 'go-mode-hook 'go-imenu-setup)
 #+END_SRC
-** GO Mode
+*** GO IMenu
 #+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'go-imenu)
+  (package-refresh-contents)
+  (package-install 'go-imenu))
+  (add-hook 'go-mode-hook 'go-imenu-setup)
+#+END_SRC
+*** GO LSP
+#+BEGIN_SRC emacs-lisp
+    (use-package lsp-mode
+        :ensure t
+          :commands (lsp lsp-deferred lsp-format-buffer lsp-organize-imports)
+                :hook (go-mode . lsp-deferred))
+
+
+    (defun lsp-go-install-save-hooks ()
+        (add-hook 'before-save-hook #'lsp-format-buffer t t)
+          (add-hook 'before-save-hook #'lsp-organize-imports t t))
+    (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+    (add-hook 'go-mode-hook #'lsp)
 
 #+END_SRC
-** Go Configurations
+*** Go Configurations
 *** Go Direx
 #+BEGIN_SRC emacs-lisp
 ;;  go get -u github.com/jstemmer/gotags
@@ -757,28 +725,61 @@
 (use-package go-fill-struct
 :ensure t)
 #+END_SRC
-** DAP Mode
+*** GO debugger
+#+BEGIN_SRC emacs-lisp
+;;;  (use-package go-dlv
+ ;; :ensure t)
+#+END_SRC
+*** DAP Go
+#+BEGIN_SRC emacs-lisp
+ (require 'dap-go)
+#+END_SRC
+** Treemacs
+#+BEGIN_SRC emacs-lisp
+  ;; project-explorer installation
+   (use-package treemacs
+     :ensure t
+     :bind
+   ("M-p" . treemacs)
+   ("M-0" . treemacs-select-window)
+   )
+   (setq treemacs-icons-dired-mode nil)
+   (setq treemacs-filewatch-mode t)
+   (setq treemacs-indentation-string " ")
+   (setq treemacs-fringe-indicator-mode t)
+   (setq treemacs-git-mode 'extended)
+   (setq treemacs-show-hidden-files t)
+   (setq treemacs-sorting 'alphabetic-asc)
+   (setq treemacs-recenter-after-file-follow t)
+   (setq split-width-threshold 0)
+   (setq treemacs-position 'right)
+   (setq treemacs-no-png-images t)
+   (setq treemacs-width 50)
+#+END_SRC
+** Treemacs Lsp
+#+BEGIN_SRC emacs-lisp
+      (use-package lsp-treemacs
+      :ensure t
+      :config
+      (lsp-treemacs-sync-mode 1))
+#+END_SRC
+** flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t)
+  (global-flycheck-mode)
+  ;;(package-install 'exec-path-from-shell)
+  ;;(exec-path-from-shell-initialize)
+#+END_SRC
+** DAP Mode GO
 #+BEGIN_SRC emacs-lisp
   ;; (use-package dap-mode
-  ;;   :ensure t)
-  ;; (require 'dap-go)
+   ;;  :ensure t
+   ;;  :init (dap-mode 1))
   ;; (add-hook 'dap-stopped-hook
-  ;; 	  (lambda (arg) (call-interactively #'dap-hydra)))
-
-  ;; (dap-mode 1)
-
-  ;; ;; The modes below are optional
-
-  ;; (dap-ui-mode 1)
-  ;; ;; enables mouse hover support
-  ;; (dap-tooltip-mode 1)
-  ;; ;; use tooltips for mouse hover
-  ;; ;; if it is not enabled `dap-mode' will use the minibuffer.
-  ;; (tooltip-mode 1)
-  ;; ;; displays floating panel with debug buttons
-  ;; ;; requies emacs 26+
-  ;; (dap-ui-controls-mode 1)
-
+  ;;          (lambda (arg) (call-interactively #'dap-hydra)))
+  ;;add this in init.el
+  ;;(require 'dap-go)
 #+END_SRC
 ** Tramp
 #+BEGIN_SRC emacs-lisp
@@ -800,9 +801,8 @@
                      :major-modes '(go-mode)
                      :remote? t
                      :server-id 'gopls-remote))
-
 #+END_SRC
-** COMMENT DOOM Theme
+** GUI Theme
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
      :ensure t)
@@ -845,4 +845,86 @@
            auto-package-update-interval 4)
      (auto-package-update-maybe))
 
+#+END_SRC
+** Helm
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t)
+#+END_SRC
+** Project wide search wl
+#+BEGIN_SRC emacs-lisp
+  (use-package ag
+    :ensure t)
+#+END_SRC
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t)
+#+END_SRC
+** Python
+*** Python Mode
+#+BEGIN_SRC emacs-lisp
+  (autoload 'python-mode "python-mode" "Python Mode." t)
+  (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+  (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+  (use-package python-mode
+    :ensure t)
+  (use-package lsp-mode
+    :config
+    (lsp-register-custom-settings
+     '(("pyls.plugins.pyls_mypy.enabled" t t)
+       ("pyls.plugins.pyls_mypy.live_mode" nil t)
+       ("pyls.plugins.pyls_black.enabled" t t)
+       ("pyls.plugins.pyls_isort.enabled" t t)))
+    :hook
+    ((python-mode . lsp)))
+
+
+  (use-package lsp-ui
+    :commands lsp-ui-mode)
+
+  (lsp-register-custom-settings
+   '(("pyls.plugins.flake8.enabled" t t)))
+
+
+  (use-package lsp-pyright
+    :ensure t
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-pyright)
+                            (lsp))))
+#+END_SRC
+*** elpy
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :defer t
+    :init
+    (advice-add 'python-mode :before 'elpy-enable))
+#+END_SRC
+*** Python lsp
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-python-ms
+    :ensure t
+    :init (setq lsp-python-ms-auto-install-server t)
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-python-ms)
+                            (lsp))))
+#+END_SRC
+*** Python DAP
+#+BEGIN_SRC emacs-lisp
+    (require 'dap-python)
+;;the python exe to be used by dap
+  (setq-default dap-python-executable "python3")
+#+END_SRC
+
+** exec path from shell
+#+BEGIN_SRC emacs-lisp
+      (use-package exec-path-from-shell
+        :ensure t)
+      (exec-path-from-shell-initialize)
+      (setq-default exec-path-from-shell-arguments nil)
+    (setq-default exec-path-from-shell t)
+    (setq shell-command-switch "-c")
+  (setenv "ZSH_ENV" (expand-file-name "~/.zshrc"))
 #+END_SRC
