@@ -16,61 +16,62 @@
 #+END_SRC
 *** ORG Mode
 #+BEGIN_SRC emacs-lisp
-;;use melpa as my package manager			   
-	       (require 'org)						      
-	       ;;enable orgmode bullets					      
-	       (use-package org-bullets					      
-	       :ensure t							      
-	       :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode)))) 
-	       
-	       ;; org mode templates ;;use <el to invoke this template;;TODO: not working
-	       (setq org-src-window-setup 'current-window)
-	       (add-to-list 'org-structure-template-alist
-	       '("el" "#+BEGIN_SRC emacs-lisp \n?\n#+END_SRC"))
-	       
-	       (add-hook 'org-mode-hook 'org-indent-mode)
+  ;;use melpa as my package manager			   
+  (require 'org)						      
+  ;;enable orgmode bullets					      
+  (use-package org-bullets					      
+    :ensure t							      
+    :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode)))) 
+
+  ;; org mode templates ;;use <el to invoke this template;;TODO: not working
+  (setq org-src-window-setup 'current-window)
+  (add-to-list 'org-structure-template-alist
+                              '("el" "#+BEGIN_SRC emacs-lisp \n?\n#+END_SRC"))
+
+  (add-hook 'org-mode-hook 'org-indent-mode)
 #+END_SRC
 *** remove toolbars and menus, disable bell, scrollbars
 #+BEGIN_SRC emacs-lisp
-        ;;Remove the toolbar and menubar
-        (tool-bar-mode -1)		 
-        (menu-bar-mode -1)
-        ;;disable ring bell function
-        (setq ring-bell-function 'ignore)
-        ;;scrolling os too much, lets reduce it to scroll line by line
-        (setq scroll-conservatively 100)
-        (scroll-bar-mode -1)
-        ;;(setq-default cursor-type 'bar)
-        (when window-system (global-hl-line-mode t))
-        ;disable backup
-        (setq backup-inhibited t)
-        ;disable auto save
-        (setq auto-save-default nil)
+  ;;Remove the toolbar and menubar
+  (tool-bar-mode -1)		 
+  (menu-bar-mode -1)
+  ;;disable ring bell function
+  (setq ring-bell-function 'ignore)
+  ;;scrolling os too much, lets reduce it to scroll line by line
+  (setq scroll-conservatively 100)
+  (scroll-bar-mode -1)
+  (setq-default cursor-type '(box . 6))
+  (when window-system (global-hl-line-mode t))
+  ;;disable backup
+  (setq backup-inhibited t)
+  ;;disable auto save
+  (setq auto-save-default nil)
 
-        (global-set-key "\M-n"  (lambda () (interactive) (scroll-up 2)))
-        (global-set-key "\M-p"  (lambda () (interactive) (scroll-down 2)))
+  (global-set-key "\M-n"  (lambda () (interactive) (scroll-up 2)))
+  (global-set-key "\M-p"  (lambda () (interactive) (scroll-down 2)))
 
-        (global-set-key (kbd "M-<down>")  (lambda () (interactive) (scroll-up 2)))
-        (global-set-key (kbd "M-<up>")  (lambda () (interactive) (scroll-down 2)))
-       (setq-default display-line-numbers-width 2)
+  (global-set-key (kbd "M-<down>")  (lambda () (interactive) (scroll-up 2)))
+  (global-set-key (kbd "M-<up>")  (lambda () (interactive) (scroll-down 2)))
+  (setq-default display-line-numbers-width 2)
+  (setq scroll-margin 4)
 #+END_SRC
 
 ** IDO
 *** IDO
 #+BEGIN_SRC emacs-lisp                             
-;;this allow you to browse through files on C-x b
-;;  (setq ido-enable-flex-matching nil)            
-;;  (setq ido-create-new-buffer 'always)           
-;;  (setq ido-everywhere t)                        
-;;  (ido-mode 1)                                   
+  ;;this allow you to browse through files on C-x b
+  ;;  (setq ido-enable-flex-matching nil)            
+  ;;  (setq ido-create-new-buffer 'always)           
+  ;;  (setq ido-everywhere t)                        
+  ;;  (ido-mode 1)                                   
 
 #+END_SRC
 
 *** IDO Vertical mode
 #+BEGIN_SRC emacs-lisp
-  ;;NOTE: Check alternates											           
-  ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs     
- ;; (use-package ido-vertical-mode										       	   
+   ;;NOTE: Check alternates											           
+   ;;install ido vertical to show the files in a vertical format, this needs to be installed as its not part of emacs     
+  ;; (use-package ido-vertical-mode										       	   
   ;;  :ensure t													       	   
   ;;  :init														   
   ;;  (ido-vertical-mode 1)												   
@@ -112,9 +113,9 @@
 #+BEGIN_SRC emacs-lisp
   ;;enables you to search any character
   (use-package avy
-  :ensure t
-  :bind
-  ("C-;" . avy-goto-char-2))
+    :ensure t
+    :bind
+    ("C-;" . avy-goto-char-2))
 #+END_SRC
 ** Custom config open and reload functions
 #+BEGIN_SRC emacs-lisp
@@ -122,15 +123,12 @@
   (defun config-open()
     (interactive)
     (find-file "~/.emacs.d/config.org"))
-
   (global-set-key (kbd "C-c o") 'config-open)
 
   ;;config reload
-
   (defun config-reload()
     (interactive)
     (org-babel-load-file (expand-file-name "~/.emacs.d/init.el")))
-
   (global-set-key (kbd "C-c r") 'config-reload)
 #+END_SRC
 ** Beacon highlight the line with cusrosor on buffer switch
@@ -151,32 +149,32 @@
 ** Switch Windows Settings
 *** Switch Window
 #+BEGIN_SRC emacs-lisp
-    ;;window navigation- switch window
-    (use-package switch-window
+  ;;window navigation- switch window
+  (use-package switch-window
     :ensure t
     :config
     (setq switch-window-input-style 'minibuffer)
     (setq switch-window-increase 4)
     (setq switch-window-threshold 1);;this shows window labels on C-x o when the number of windows is greater than 3; keeping it 1 to allow resize shortcuts
     :bind
-      ([remap other-window] . switch-window))    ;;remap the other window function to switch window
+    ([remap other-window] . switch-window))    ;;remap the other window function to switch window
 #+END_SRC
 *** Split Window function and shortcuts
 #+BEGIN_SRC emacs-lisp
-    ;; custom function : when I split the window, the cursor should go to the newly created window
-    (defun split-and-follow-horizontally()
+  ;; custom function : when I split the window, the cursor should go to the newly created window
+  (defun split-and-follow-horizontally()
     (interactive)
     (split-window-below)
     (balance-windows)
     (other-window 1))
-    (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
-    ;; custom function : when I split the window, the cursor should go to the newly created window
-    (defun split-and-follow-vertically()
+  (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+  ;; custom function : when I split the window, the cursor should go to the newly created window
+  (defun split-and-follow-vertically()
     (interactive)
     (split-window-right)
     (balance-windows)
     (other-window 1))
-    (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+  (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 #+END_SRC
 *** Navigate through open buffers
 #+BEGIN_SRC emacs-lisp
@@ -230,9 +228,10 @@
   ;;(setq linum-format "%3d \u2502")
   ;;(setq display-line-numbers 'relative)
   (setq-default display-line-numbers 'relative)
+
   (fringe-mode '(15 . 10))
   (defun custom-linum-background  ()
-      (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
+    (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
   ;;    (add-to-list 'default-frame-alist 'my-set-background-color)
   ;;(add-hook 'after-make-frame-functions (set-face-background 'line-number (color-darken-name (face-attribute 'default :background) 2)))
   (add-hook 'prog-mode-hook 'custom-linum-background)
@@ -253,11 +252,11 @@
   (global-set-key (kbd "C-c w l") 'copy-whole-line)
 
   ;; C-c w e copy rest of the line
-    (defun copy-line-to-endofline()
-      (interactive)
-      (save-excursion
-        (kill-new (buffer-substring (point) (point-at-eol)))))
-    (global-set-key (kbd "C-c w e") 'copy-line-to-endofline)
+  (defun copy-line-to-endofline()
+    (interactive)
+    (save-excursion
+      (kill-new (buffer-substring (point) (point-at-eol)))))
+  (global-set-key (kbd "C-c w e") 'copy-line-to-endofline)
 #+END_SRC
 
 *** kill ring- multiple
@@ -268,9 +267,9 @@
 #+END_SRC
 *** mutiple cursors (highlight the selected text on the page and edit all)
 #+BEGIN_SRC emacs-lisp
-    (use-package multiple-cursors
-      :ensure t
-      :bind ("C-c q" . 'mc/mark-all-like-this))
+  (use-package multiple-cursors
+    :ensure t
+    :bind ("C-c q" . 'mc/mark-all-like-this))
   (global-set-key (kbd "C-S-c") 'mc/edit-lines)
 #+END_SRC
 *** expand-region
@@ -297,12 +296,12 @@
 #+BEGIN_SRC emacs-lisp
   ;;autocomplete the parentheses and others
   (setq electric-pair-pairs '(
-			     (?\( . ?\))
-			     (?\[ . ?\])
-			     (?\" . ?\")
-			     (?\' . ?\')
-			     (?\{ . ?\})
-			     ))
+                              (?\( . ?\))
+                              (?\[ . ?\])
+                              (?\" . ?\")
+                              (?\' . ?\')
+                              (?\{ . ?\})
+                              ))
   (electric-pair-mode t)
 #+END_SRC
 *** sudo edit
@@ -313,55 +312,54 @@
 #+END_SRC
 *** rainbow delimiters
 #+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-  :ensure t
-  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-  (show-paren-mode 1))
-(setq show-paren-style 'parenthesis)
-(set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+    (use-package rainbow-delimiters
+      :ensure t
+      :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+      (show-paren-mode 1))
+  (setq show-paren-style 'parenthesis)
+  (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
 #+END_SRC
 *** Autocomplete
 #+BEGIN_SRC emacs-lisp
       (use-package company
-      :ensure t
-      :config
-      (setq company-idle-delay 0)
-      (setq company-minimum-prefix-length 1)
-      :init
-      (add-hook 'after-init-hook 'global-company-mode))
+        :ensure t
+        :config
+        (setq company-idle-delay 0)
+        (setq company-minimum-prefix-length 1)
+        :init
+        (add-hook 'after-init-hook 'global-company-mode))
   (setq company-begin-commands '(self-insert-command))
 
   ;;show companyquick help for symbols on popup
-   (use-package company-quickhelp
-     :ensure t)
-   (company-quickhelp-mode)
+  (use-package company-quickhelp
+    :ensure t)
+  (company-quickhelp-mode)
 #+END_SRC
 *** yasnippet
 #+BEGIN_SRC emacs-lisp
-    ;;yasnippet provides the functionality
-    ;;yasnippet snippet provides the snippets
-    ;; (use-package yasnippet
-    ;;   :ensure t
-    ;;   :config
-    ;;   (use-package yasnippet-snippets
-    ;;     :ensure t)
-    ;;   (yas-reload-all)
-    ;;   (yas-global-mode))
+  ;;yasnippet provides the functionality
+  ;;yasnippet snippet provides the snippets
+  ;; (use-package yasnippet
+  ;;   :ensure t
+  ;;   :config
+  ;;   (use-package yasnippet-snippets
+  ;;     :ensure t)
+  ;;   (yas-reload-all)
+  ;;   (yas-global-mode))
   ;;add custom snippets to /snippets/<prog.lang.name>-mode/ dir
 #+END_SRC
 *** Comment
 #+BEGIN_SRC emacs-lisp
   ;; Toggle Comment Uncomment line
-   (global-set-key (kbd "C-c .") 'comment-line)
+  (global-set-key (kbd "C-c .") 'comment-line)
 #+END_SRC
 *** Indentation highlighting
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indent-guides
-      :ensure t)
+    :ensure t)
   (setq highlight-indent-guides-method 'character)
   (setq highlight-indent-guides-responsive 'stack)
   (setq highlight-indent-guides-delay 0)
-
 
   (set-face-background 'highlight-indent-guides-odd-face "darkgray")
   (set-face-background 'highlight-indent-guides-even-face "dimgray")
@@ -372,12 +370,12 @@
 #+END_SRC
 *** IMenu
 #+BEGIN_SRC emacs-lisp
-(use-package imenu-list
-  :ensure t
-  :bind (("C-." . imenu-list-smart-toggle))
-  :config
-  (setq imenu-list-focus-after-activation t
-        imenu-list-auto-resize nil))
+  (use-package imenu-list
+    :ensure t
+    :bind (("C-." . imenu-list-smart-toggle))
+    :config
+    (setq imenu-list-focus-after-activation t
+          imenu-list-auto-resize nil))
 #+END_SRC
 *** highlight parenthesis
 #+BEGIN_SRC emacs-lisp
@@ -395,19 +393,37 @@
 #+END_SRC
 *** smart mode line
 #+BEGIN_SRC emacs-lisp
-(setq sml/no-confirm-load-theme t)
-(use-package smart-mode-line
-:ensure t
-:init (setq sml/theme 'dark))
-;; TODO: use package dimisnish to remove minor modes fdeom the mode line
+  (setq sml/no-confirm-load-theme t)
+  (use-package smart-mode-line
+    :ensure t
+    :init (setq sml/theme 'dark))
+  ;; TODO: use package dimisnish to remove minor modes fdeom the mode line
+  (use-package powerline
+    :ensure t)
+  (powerline-center-evil-theme)
 #+END_SRC
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
+  (defun my/dashboard-banner ()
+    """Set a dashboard banner including information on package initialization
+        time and garbage collections."""
+        (setq dashboard-banner-logo-title
+              (format "Emacs ready in %.2f seconds with %d garbage collections."
+                      (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
   (use-package dashboard
-    :ensure t
-    :config (dashboard-setup-startup-hook))
-  (setq dashboard-banner-logo-title "Welcome Master K")
+    :init
+    (add-hook 'after-init-hook 'dashboard-refresh-buffer)
+    (add-hook 'dashboard-mode-hook 'my/dashboard-banner)
+    :config
+    (dashboard-setup-startup-hook))
+
+  (setq dashboard-startup-banner "~/src/emacs.png")
+  (setq dashboard-banner-logo-title "Welcome Master")
   (setq dashboard-center-content t)
+  (setq dashboard-show-shortcuts t)
+  (setq dashboard-set-navigator t)
+  (setq dashboard-set-init-info t)
+  ;; (setq dashboard-items '((bookmarks . 10)))
 #+END_SRC
 ** dmenu
 #+BEGIN_SRC emacs-lisp
@@ -445,7 +461,7 @@
      (use-package counsel
        :ensure t
        :init (counsel-mode 1))
-       ;;add this at the end of file; else M-x bindings gets overidden
+     ;;add this at the end of file; else M-x bindings gets overidden
      (global-set-key (kbd "M-x") 'counsel-M-x)
    #+END_SRC
 ** Cassandra
@@ -496,35 +512,35 @@
 #+BEGIN_SRC emacs-lisp
   ;;Save backup file at a different location
   (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-    backup-by-copying t    ; Don't delink hardlinks
-    version-control t      ; Use version numbers on backups
-    delete-old-versions t  ; Automatically delete excess backups
-    kept-new-versions 20   ; how many of the newest versions to keep
-    kept-old-versions 5    ; and how many of the old
-    )
+        backup-by-copying t    ; Don't delink hardlinks
+        version-control t      ; Use version numbers on backups
+        delete-old-versions t  ; Automatically delete excess backups
+        kept-new-versions 20   ; how many of the newest versions to keep
+        kept-old-versions 5    ; and how many of the old
+        )
 
 #+END_SRC
 ** Display File name at the top
 #+BEGIN_SRC emacs-lisp
   ;;Display file path in the title bar
   (setq frame-title-format
-    '(:eval
-      (if buffer-file-name
-          (replace-regexp-in-string
-           "\\\\" "/"
-           (replace-regexp-in-string
-            (regexp-quote (getenv "HOME")) "~"
-            (convert-standard-filename buffer-file-name)))
-        (buffer-name))))
+        '(:eval
+          (if buffer-file-name
+              (replace-regexp-in-string
+               "\\\\" "/"
+               (replace-regexp-in-string
+                (regexp-quote (getenv "HOME")) "~"
+                (convert-standard-filename buffer-file-name)))
+            (buffer-name))))
 #+END_SRC
 ** Tramp
 #+BEGIN_SRC emacs-lisp
-(require 'tramp)
-(add-to-list 'tramp-remote-path "/home/kartik/src/go/bin")
-;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-(let ((process-environment tramp-remote-process-environment))
-       (setenv "ENV" "$HOME/.profile")
-       (setq tramp-remote-process-environment process-environment))
+  (require 'tramp)
+  (add-to-list 'tramp-remote-path "/home/kartik/src/go/bin")
+  ;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  (let ((process-environment tramp-remote-process-environment))
+    (setenv "ENV" "$HOME/.profile")
+    (setq tramp-remote-process-environment process-environment))
 #+END_SRC
 ** LSP
 *** LSP mode(enabled for GO mode)
@@ -532,35 +548,35 @@
     ;;lsp go mode
 
     ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
-    ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
+  ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
 
-    (setq-default lsp-headerline-breadcrumb-enable t)
-    (setq lsp-enable-symbol-highlighting t)
-    ;;(setq lsp-completion-provider :none)
-    (setq-default lsp-completion-show-detail t)
-    (setq-default lsp-completion-show-kind t)
-    (setq-default lsp-lens-enable t)
-    (setq-default lsp-ui-sideline-enable t)
-    (setq-default lsp-ui-sideline-show-code-actions t)
-    (setq-default lsp-ui-sideline-enable t)
-    (setq-default lsp-ui-sideline-show-hover nil)
-    (setq-default lsp-eldoc-enable-hover t)
-    (setq-default lsp-modeline-diagnostics-enable t)
-    (setq-default lsp-enable-semantic-highlighting nil)
-    (setq-default lsp-enable-snippet t)
+  (setq-default lsp-headerline-breadcrumb-enable t)
+  (setq lsp-enable-symbol-highlighting t)
+  ;;(setq lsp-completion-provider :none)
+  (setq-default lsp-completion-show-detail t)
+  (setq-default lsp-completion-show-kind t)
+  (setq-default lsp-lens-enable t)
+  (setq-default lsp-ui-sideline-enable t)
+  (setq-default lsp-ui-sideline-show-code-actions t)
+  (setq-default lsp-ui-sideline-enable t)
+  (setq-default lsp-ui-sideline-show-hover nil)
+  (setq-default lsp-eldoc-enable-hover t)
+  (setq-default lsp-modeline-diagnostics-enable t)
+  (setq-default lsp-enable-semantic-highlighting nil)
+  (setq-default lsp-enable-snippet t)
 
-    (setq-default lsp-lens-enable t)
-    (setq-default lsp-signature-auto-activate t)
-    (setq-default lsp-signature-doc-lines 1)
-    (setq-default lsp-signature-render-documentation nil)
-    (setq-default lsp-lens-place-position 'above-line)
-    (setq-default lsp-modeline-workspace-status-enable t)
-    ;;(set-face-attribute 'lsp-face-highlight-textual nil
-    ;;                    :background "#474747")
-    (with-eval-after-load 'lsp-mode
-      (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
-    (setq-default lsp-ui-doc-position 'right)
-    (setq-default lsp-eldoc-render-all nil)
+  (setq-default lsp-lens-enable t)
+  (setq-default lsp-signature-auto-activate t)
+  (setq-default lsp-signature-doc-lines 1)
+  (setq-default lsp-signature-render-documentation nil)
+  (setq-default lsp-lens-place-position 'above-line)
+  (setq-default lsp-modeline-workspace-status-enable t)
+  ;;(set-face-attribute 'lsp-face-highlight-textual nil
+                      ;;:background "#474747")
+  (with-eval-after-load 'lsp-mode
+    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+  (setq-default lsp-ui-doc-position 'right)
+  (setq-default lsp-eldoc-render-all nil)
   (setq-default lsp-modeline-code-actions-enable t)
 #+END_SRC
 *** LSP Ivy
@@ -569,7 +585,7 @@
 #+END_SRC
 *** LSP UI
 #+BEGIN_SRC emacs-lisp
-    (use-package lsp-ui
+  (use-package lsp-ui
     :ensure t)
   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
@@ -579,9 +595,9 @@
   (setq lsp-ui-doc-max-height 20)
   (setq lsp-ui-peek-enable t)
   (setq lsp-ui-peek-show-directory t)
-(setq lsp-ui-imenu-window-width 40)
+  (setq lsp-ui-imenu-window-width 40)
   (global-set-key (kbd "C-?") 'lsp-ui-imenu)
-(setq-default lsp-enable-symbol-highlighting t)
+  (setq-default lsp-enable-symbol-highlighting t)
 #+END_SRC
 ** dap mode for debugging
 #+BEGIN_SRC emacs-lisp
@@ -595,21 +611,21 @@
     (require 'dap-ui)
     (dap-ui-mode 1))
   (setq dap-auto-configure-features '(sessions locals controls tooltip))
-  ; ;; The modes below are optional
+  ;; The modes below are optional
   (dap-ui-mode 1)
-  ;; ;; enables mouse hover support
+  ;; enables mouse hover support
   (dap-tooltip-mode 1)
-  ;; ;; use tooltips for mouse hover
-  ;; ;; if it is not enabled `dap-mode' will use the minibuffer.
+  ;;  use tooltips for mouse hover
+  ;;  if it is not enabled `dap-mode' will use the minibuffer.
   (tooltip-mode 1)
-  ;; ;; displays floating panel with debug buttons
-  ;; ;; requies emacs 26+
+  ;;  displays floating panel with debug buttons
+  ;;  requies emacs 26+
   (dap-ui-controls-mode 1)
 #+END_SRC
 *** company mode(already installed)
 *** lsp treemacs
 #+BEGIN_SRC emacs-lisp
-;;(lsp-treemacs-sync-mode 1)
+  ;;(lsp-treemacs-sync-mode 1)
 #+END_SRC
 *** lsp configurations
 #+BEGIN_SRC emacs-lisp
@@ -631,51 +647,49 @@
 
 *** GO PLS configurations
 #+BEGIN_SRC emacs-lisp
-;;(setq lsp-go-hover-kind "FullDocumentation")
+  ;;(setq lsp-go-hover-kind "FullDocumentation")
 #+END_SRC
 ** GO
 *** GO Mode
 #+BEGIN_SRC emacs-lisp
-      (use-package go-mode
-      :ensure t)
-      (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-(add-hook 'go-mode-hook 'go-imenu-setup)
+  (use-package go-mode
+    :ensure t)
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+  (add-hook 'go-mode-hook 'go-imenu-setup)
 #+END_SRC
 *** GO IMenu
 #+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'go-imenu)
-  (package-refresh-contents)
-  (package-install 'go-imenu))
+  (unless (package-installed-p 'go-imenu)
+    (package-refresh-contents)
+    (package-install 'go-imenu))
   (add-hook 'go-mode-hook 'go-imenu-setup)
 #+END_SRC
 *** GO LSP
 #+BEGIN_SRC emacs-lisp
-    (use-package lsp-mode
-        :ensure t
-          :commands (lsp lsp-deferred lsp-format-buffer lsp-organize-imports)
-                :hook (go-mode . lsp-deferred))
+  (use-package lsp-mode
+    :ensure t
+    :commands (lsp lsp-deferred lsp-format-buffer lsp-organize-imports)
+    :hook (go-mode . lsp-deferred))
 
-
-    (defun lsp-go-install-save-hooks ()
-        (add-hook 'before-save-hook #'lsp-format-buffer t t)
-          (add-hook 'before-save-hook #'lsp-organize-imports t t))
-    (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-    (add-hook 'go-mode-hook #'lsp)
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  (add-hook 'go-mode-hook #'lsp)
 
 #+END_SRC
 *** Go Configurations
 *** Go Direx
 #+BEGIN_SRC emacs-lisp
-;;  go get -u github.com/jstemmer/gotags
+  ;;  go get -u github.com/jstemmer/gotags
   (use-package direx
-  :ensure t)
+    :ensure t)
   (global-set-key (kbd "C-x C-j") 'direx:jump-to-directory)
- ;; install go tags
+  ;; install go tags
 
   (use-package go-direx
     :ensure t)
   (define-key go-mode-map (kbd "C-x C-j") 'go-direx-pop-to-buffer)
-
 
   (use-package popwin
     :ensure t)
@@ -698,32 +712,32 @@
 #+END_SRC
 *** Go Imports
 #+BEGIN_SRC emacs-lisp
- ;; (use-package go-imports
- ;; :ensure t)
-;;(setq go-save-hook #'goimports-before-save)
+  ;; (use-package go-imports
+  ;; :ensure t)
+  ;;(setq go-save-hook #'goimports-before-save)
 #+END_SRC
 *** Go Guru
 #+BEGIN_SRC emacs-lisp
-  ;;install go guru and go eldoc using go get and emacs package
+    ;;install go guru and go eldoc using go get and emacs package
   (use-package go-guru
     :ensure t)
-    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-;;use-go-mode-set-scope github.com/...   to specificy package scope usually a path to your project
+  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+  ;;use-go-mode-set-scope github.com/...   to specificy package scope usually a path to your project
 #+END_SRC
 *** Go eldoc
 #+BEGIN_SRC emacs-lisp
-;;show function paremeters in the minibuffer
-(use-package go-eldoc
-:ensure t) ;; Don't need to require, if you install by package.el
-(add-hook 'go-mode-hook 'go-eldoc-setup)
-(set-face-attribute 'eldoc-highlight-function-argument nil
-                    :underline t
-                    :weight 'bold)
+  ;;show function paremeters in the minibuffer
+  (use-package go-eldoc
+    :ensure t) ;; Don't need to require, if you install by package.el
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (set-face-attribute 'eldoc-highlight-function-argument nil
+                      :underline t
+                      :weight 'bold)
 #+END_SRC
 *** Go fill struct
 #+BEGIN_SRC emacs-lisp
-(use-package go-fill-struct
-:ensure t)
+  (use-package go-fill-struct
+  :ensure t)
 #+END_SRC
 *** GO debugger
 #+BEGIN_SRC emacs-lisp
@@ -732,36 +746,36 @@
 #+END_SRC
 *** DAP Go
 #+BEGIN_SRC emacs-lisp
- (require 'dap-go)
+  (require 'dap-go)
 #+END_SRC
 ** Treemacs
 #+BEGIN_SRC emacs-lisp
   ;; project-explorer installation
-   (use-package treemacs
-     :ensure t
-     :bind
-   ("M-p" . treemacs)
-   ("M-0" . treemacs-select-window)
-   )
-   (setq treemacs-icons-dired-mode nil)
-   (setq treemacs-filewatch-mode t)
-   (setq treemacs-indentation-string " ")
-   (setq treemacs-fringe-indicator-mode t)
-   (setq treemacs-git-mode 'extended)
-   (setq treemacs-show-hidden-files t)
-   (setq treemacs-sorting 'alphabetic-asc)
-   (setq treemacs-recenter-after-file-follow t)
-   (setq split-width-threshold 0)
-   (setq treemacs-position 'right)
-   (setq treemacs-no-png-images t)
-   (setq treemacs-width 50)
+  (use-package treemacs
+    :ensure t
+    :bind
+    ("M-p" . treemacs)
+    ("M-0" . treemacs-select-window)
+    )
+  (setq treemacs-icons-dired-mode nil)
+  (setq treemacs-filewatch-mode t)
+  (setq treemacs-indentation-string " ")
+  (setq treemacs-fringe-indicator-mode t)
+  (setq treemacs-git-mode 'extended)
+  (setq treemacs-show-hidden-files t)
+  (setq treemacs-sorting 'alphabetic-asc)
+  (setq treemacs-recenter-after-file-follow t)
+  (setq split-width-threshold 0)
+  (setq treemacs-position 'right)
+  (setq treemacs-no-png-images t)
+  (setq treemacs-width 50)
 #+END_SRC
 ** Treemacs Lsp
 #+BEGIN_SRC emacs-lisp
-      (use-package lsp-treemacs
-      :ensure t
-      :config
-      (lsp-treemacs-sync-mode 1))
+  (use-package lsp-treemacs
+    :ensure t
+    :config
+    (lsp-treemacs-sync-mode 1))
 #+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
@@ -815,26 +829,26 @@
 #+END_SRC
 ** JSON Mode
 #+BEGIN_SRC emacs-lisp
-(use-package json-mode
-  :mode "\\.json\\'")
+;;(use-package json-mode
+;;  :mode "\\.json\\'")
 #+END_SRC
 ** Yaml Mode
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
 ** Evil Mode
 #+BEGIN_SRC emacs-lisp
-;;  (use-package evil
-;;    :ensure t
-;;    :config (evil-mode 1))
+   (use-package evil
+     :ensure t
+     :config (evil-mode 1))
 
-;;  (use-package undo-tree
-;;    :ensure t)
-;;  ;(global-undo-tree-mode)
+   (use-package undo-tree
+     :ensure t)
+   ;(global-undo-tree-mode)
 
-;;  (use-package undo-fu
-;;    :ensure t)
-;;  (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-;;  (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+   (use-package undo-fu
+     :ensure t)
+   (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+   (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
 #+END_SRC
 ** Package updater
 #+BEGIN_SRC emacs-lisp
@@ -851,10 +865,16 @@
   (use-package helm
     :ensure t)
 #+END_SRC
-** Project wide search wl
+** Project wide search ag : the silver search
 #+BEGIN_SRC emacs-lisp
   (use-package ag
     :ensure t)
+#+END_SRC
+** Ripgrep
+#+BEGIN_SRC emacs-lisp
+    (use-package rg
+      :ensure t
+      :init (rg-enable-default-bindings))
 #+END_SRC
 ** Magit
 #+BEGIN_SRC emacs-lisp
@@ -879,20 +899,20 @@
        ("pyls.plugins.pyls_isort.enabled" t t)))
     :hook
     ((python-mode . lsp)))
-
-
+  (setq elpy-rpc-python-command "python3")
+  (setenv "PYTHONIOENCODING" "utf-8") (add-to-list 'process-coding-system-alist '("elpy" . (utf-8 . utf-8))) (add-to-list 'process-coding-system-alist '("python" . (utf-8 . utf-8))) (add-to-list 'process-coding-system-alist '("flake8" . (utf-8 . utf-8)))
+  (setq-default dap-python-executable "python3")
   (use-package lsp-ui
     :commands lsp-ui-mode)
-
+  (setq python-shell-interpreter "/usr/local/bin/python3")
   (lsp-register-custom-settings
    '(("pyls.plugins.flake8.enabled" t t)))
-
 
   (use-package lsp-pyright
     :ensure t
     :hook (python-mode . (lambda ()
-                            (require 'lsp-pyright)
-                            (lsp))))
+                           (require 'lsp-pyright)
+                           (lsp))))
 #+END_SRC
 *** elpy
 #+BEGIN_SRC emacs-lisp
@@ -908,23 +928,72 @@
     :ensure t
     :init (setq lsp-python-ms-auto-install-server t)
     :hook (python-mode . (lambda ()
-                            (require 'lsp-python-ms)
-                            (lsp))))
+                           (require 'lsp-python-ms)
+                           (lsp))))
 #+END_SRC
 *** Python DAP
 #+BEGIN_SRC emacs-lisp
-    (require 'dap-python)
-;;the python exe to be used by dap
+  (require 'dap-python)
+  ;;the python exe to be used by dap and lsp
   (setq-default dap-python-executable "python3")
 #+END_SRC
 
 ** exec path from shell
 #+BEGIN_SRC emacs-lisp
-      (use-package exec-path-from-shell
-        :ensure t)
-      (exec-path-from-shell-initialize)
-      (setq-default exec-path-from-shell-arguments nil)
-    (setq-default exec-path-from-shell t)
-    (setq shell-command-switch "-c")
+  (use-package exec-path-from-shell
+    :ensure t)
+  (exec-path-from-shell-initialize)
+  (setq-default exec-path-from-shell-arguments nil)
+  (setq-default exec-path-from-shell t)
+  (setq shell-command-switch "-ic")
   (setenv "ZSH_ENV" (expand-file-name "~/.zshrc"))
+#+END_SRC
+
+** Java
+*** lsp
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-java
+    :ensure t)
+(add-hook 'java-mode-hook #'lsp)
+#+END_SRC
+*** dap
+#+BEGIN_SRC emacs-lisp
+ ;; (use-package dap-java :ensure t)
+#+END_SRC
+
+** Hydra
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package hydra
+  ;;   :ensure t)
+  ;;   (defhydra hydra-buffer-menu (:color pink
+  ;;                                :hint nil)
+  ;;     "
+  ;;   ^Mark^             ^Unmark^           ^Actions^          ^Search
+  ;;   ^^^^^^^^-----------------------------------------------------------------
+  ;;   _m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
+  ;;   _s_: save          _U_: unmark up     _b_: bury          _I_: isearch
+  ;;   _d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
+  ;;   _D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
+  ;;   _~_: modified
+  ;;   "
+  ;;     ("m" Buffer-menu-mark)
+  ;;     ("u" Buffer-menu-unmark)
+  ;;     ("U" Buffer-menu-backup-unmark)
+  ;;     ("d" Buffer-menu-delete)
+  ;;     ("D" Buffer-menu-delete-backwards)
+  ;;     ("s" Buffer-menu-save)
+  ;;     ("~" Buffer-menu-not-modified)
+  ;;     ("x" Buffer-menu-execute)
+  ;;     ("b" Buffer-menu-bury)
+  ;;     ("g" revert-buffer)
+  ;;     ("T" Buffer-menu-toggle-files-only)
+  ;;     ("O" Buffer-menu-multi-occur :color blue)
+  ;;     ("I" Buffer-menu-isearch-buffers :color blue)
+  ;;     ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+  ;;     ("c" nil "cancel")
+  ;;     ("v" Buffer-menu-select "select" :color blue)
+  ;;     ("o" Buffer-menu-other-window "other-window" :color blue)
+  ;;     ("q" quit-window "quit" :color blue))
+
+  ;;   (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 #+END_SRC
