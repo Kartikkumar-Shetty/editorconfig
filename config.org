@@ -30,6 +30,12 @@
 
   (add-hook 'org-mode-hook 'org-indent-mode)
 #+END_SRC
+*** ORG Superstar
+#+BEGIN_SRC emacs-lisp
+  (use-package org-superstar
+  :ensure t)
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+#+END_SRC
 *** remove toolbars and menus, disable bell, scrollbars
 #+BEGIN_SRC emacs-lisp
   ;;Remove the toolbar and menubar
@@ -40,7 +46,15 @@
   ;;scrolling os too much, lets reduce it to scroll line by line
   (setq scroll-conservatively 100)
   (scroll-bar-mode -1)
-  (setq-default cursor-type '(box . 6))
+
+  ;;Inplace scrolls
+  (global-set-key (kbd "C-s-p") 'scroll-down-line)
+  (global-set-key (kbd "C-s-n") 'scroll-up-line)
+  (global-set-key (kbd "C-s-<up>") 'scroll-down-line)
+  (global-set-key (kbd "C-s-<down>") 'scroll-up-line)
+
+
+  ;;(setq-default cursor-type '(box . 6))
   (when window-system (global-hl-line-mode t))
   ;;disable backup
   (setq backup-inhibited t)
@@ -53,9 +67,17 @@
   (global-set-key (kbd "M-<down>")  (lambda () (interactive) (scroll-up 2)))
   (global-set-key (kbd "M-<up>")  (lambda () (interactive) (scroll-down 2)))
   (setq-default display-line-numbers-width 2)
-  (setq scroll-margin 4)
+  (setq scroll-margin 2)
+  ;;add this is after load hook in init.el
+  (set-face-foreground 'line-number "#808080")
 #+END_SRC
 
+*** mode icons
+#+BEGIN_SRC emacs-lisp
+    (use-package mode-icons
+    :ensure t)
+  (mode-icons-mode)
+#+END_SRC
 ** IDO
 *** IDO
 #+BEGIN_SRC emacs-lisp                             
@@ -108,14 +130,20 @@
     :ensure t
     :init
     (which-key-mode))
+    (which-key-setup-side-window-right-bottom)
 #+END_SRC
-** Avy
+** Avy and jump char
+*** Avy
 #+BEGIN_SRC emacs-lisp
   ;;enables you to search any character
   (use-package avy
     :ensure t
     :bind
-    ("C-;" . avy-goto-char-2))
+    ("C-;" . avy-goto-word-2))
+#+END_SRC
+*** Ace-Jump
+#+BEGIN_SRC emacs-lisp
+
 #+END_SRC
 ** Custom config open and reload functions
 #+BEGIN_SRC emacs-lisp
@@ -178,17 +206,19 @@
 #+END_SRC
 *** Navigate through open buffers
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c <up>") 'windmove-up)
-  (global-set-key (kbd "C-C <down>") 'windmove-down)
-  (global-set-key (kbd "C-c <left>") 'windmove-left)
-  (global-set-key (kbd "C-c <right>") 'windmove-right)
+    (global-set-key (kbd "C-c k") 'windmove-up)
+    (global-set-key (kbd "C-C j") 'windmove-down)
+    (global-set-key (kbd "C-c h") 'windmove-left)
+    (global-set-key (kbd "C-c l") 'windmove-right)
+    (global-set-key (kbd "C-x h") 'previous-buffer)
+    (global-set-key (kbd "C-x l") 'next-buffer)
 #+END_SRC
 *** Resize window
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-s-<down>") 'shrink-window)
-  (global-set-key (kbd "C-s-<up>") 'enlarge-window)
-  (global-set-key (kbd "C-s-<left>") 'shrink-window-horizontally)
-  (global-set-key (kbd "C-s-<right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "C-s-j") 'shrink-window)
+  (global-set-key (kbd "C-s-k") 'enlarge-window)
+  (global-set-key (kbd "C-s-h") 'shrink-window-horizontally)
+  (global-set-key (kbd "C-s-l") 'enlarge-window-horizontally)
 #+END_SRC
 ** Search, Navigation using smex
 *** smex
@@ -291,6 +321,12 @@
   (delete-selection-mode 1)
 
 #+END_SRC
+*** Undo tree
+#+BEGIN_SRC emacs-lisp
+    (use-package undo-tree
+  :ensure t)
+  (global-undo-tree-mode)
+#+END_SRC
 ** Programming Basic Settings
 *** Electric Pair
 #+BEGIN_SRC emacs-lisp
@@ -326,6 +362,7 @@
         :config
         (setq company-idle-delay 0)
         (setq company-minimum-prefix-length 1)
+        ;;(setq lsp-completion-provider :capf)
         :init
         (add-hook 'after-init-hook 'global-company-mode))
   (setq company-begin-commands '(self-insert-command))
@@ -339,13 +376,13 @@
 #+BEGIN_SRC emacs-lisp
   ;;yasnippet provides the functionality
   ;;yasnippet snippet provides the snippets
-  ;; (use-package yasnippet
-  ;;   :ensure t
-  ;;   :config
-  ;;   (use-package yasnippet-snippets
-  ;;     :ensure t)
-  ;;   (yas-reload-all)
-  ;;   (yas-global-mode))
+   (use-package yasnippet
+     :ensure t
+     :config
+     (use-package yasnippet-snippets
+       :ensure t)
+     (yas-reload-all)
+     (yas-global-mode))
   ;;add custom snippets to /snippets/<prog.lang.name>-mode/ dir
 #+END_SRC
 *** Comment
@@ -394,36 +431,36 @@
 *** smart mode line
 #+BEGIN_SRC emacs-lisp
   (setq sml/no-confirm-load-theme t)
-  (use-package smart-mode-line
-    :ensure t
-    :init (setq sml/theme 'dark))
+  ;;(use-package smart-mode-line
+  ;;  :ensure t
+  ;;  :init (setq sml/theme 'dark))
   ;; TODO: use package dimisnish to remove minor modes fdeom the mode line
-  (use-package powerline
-    :ensure t)
-  (powerline-center-evil-theme)
+  ;;(use-package powerline
+  ;;  :ensure t)
+  ;;(powerline-center-evil-theme)
 #+END_SRC
 ** Dashboard
 #+BEGIN_SRC emacs-lisp
-  (defun my/dashboard-banner ()
-    """Set a dashboard banner including information on package initialization
-        time and garbage collections."""
-        (setq dashboard-banner-logo-title
-              (format "Emacs ready in %.2f seconds with %d garbage collections."
-                      (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
-  (use-package dashboard
-    :init
-    (add-hook 'after-init-hook 'dashboard-refresh-buffer)
-    (add-hook 'dashboard-mode-hook 'my/dashboard-banner)
-    :config
-    (dashboard-setup-startup-hook))
+    (defun my/dashboard-banner ()
+      """Set a dashboard banner including information on package initialization
+          time and garbage collections."""
+          (setq dashboard-banner-logo-title
+                (format "Emacs ready in %.2f seconds with %d garbage collections."
+                        (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+    (use-package dashboard
+      :init
+      (add-hook 'after-init-hook 'dashboard-refresh-buffer)
+      (add-hook 'dashboard-mode-hook 'my/dashboard-banner)
+      :config
+      (dashboard-setup-startup-hook))
 
-  (setq dashboard-startup-banner "~/src/emacs.png")
-  (setq dashboard-banner-logo-title "Welcome Master")
-  (setq dashboard-center-content t)
-  (setq dashboard-show-shortcuts t)
-  (setq dashboard-set-navigator t)
-  (setq dashboard-set-init-info t)
-  ;; (setq dashboard-items '((bookmarks . 10)))
+    (setq dashboard-startup-banner "~/src/saitamaokemacs.png")
+    (setq dashboard-banner-logo-title "Welcome Master")
+    (setq dashboard-center-content t)
+    (setq dashboard-show-shortcuts t)
+    (setq dashboard-set-navigator t)
+    (setq dashboard-set-init-info t)
+    ;; (setq dashboard-items '((bookmarks . 10)))
 #+END_SRC
 ** dmenu
 #+BEGIN_SRC emacs-lisp
@@ -434,22 +471,24 @@
 ** symon
 #+BEGIN_SRC emacs-lisp
   ;;system monitoring
-  (use-package symon
-    :ensure t
-    :bind
-    ("s-h" . symon-mode))
+  ;;(use-package symon
+  ;;  :ensure t
+  ;;  :bind
+  ;;  ("s-h" . symon-mode))
 #+END_SRC
 ** IVY Swiper and Counsel(Add this at the end of file)
    #+BEGIN_SRC emacs-lisp
-       ;;ivy is use as a replacement for ido
+       ;;ivy is use as a replacement for ido and required for swiper
      (use-package ivy
        :ensure t
        :init (ivy-mode 1)
        (setq ivy-use-virtual-buffers t)
        (setq enable-recursive-minibuffers t)
        )
+     ;;height of ivy window
+     (setq ivy-height 35)
      ;;use ivy to switch buffers in the the mini buffer
-     (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer
+     ;;(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer);;chnage the default key since the C-x b is bind to ibuffer
 
      ;;swiper: this provides a better search functionality, dependent on ivy package
      ;;use swiper for searching C-s
@@ -545,14 +584,17 @@
 ** LSP
 *** LSP mode(enabled for GO mode)
 #+BEGIN_SRC emacs-lisp
-    ;;lsp go mode
+      ;;lsp go mode
 
+      ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
     ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
-  ;;(add-to-list 'auto-mode-alist '("\\.go\\'" . 'go-mode))
-
+ ;; (setq company-lsp-enable-snippet t)
   (setq-default lsp-headerline-breadcrumb-enable t)
   (setq lsp-enable-symbol-highlighting t)
   ;;(setq lsp-completion-provider :none)
+ ;; (setq-default lsp-completion-enable t)
+ ;; (setq-default lsp-completion-enable-additional-text-edit t)
+ ;; (setq-default lsp-completion-provider :capf)
   (setq-default lsp-completion-show-detail t)
   (setq-default lsp-completion-show-kind t)
   (setq-default lsp-lens-enable t)
@@ -572,7 +614,7 @@
   (setq-default lsp-lens-place-position 'above-line)
   (setq-default lsp-modeline-workspace-status-enable t)
   ;;(set-face-attribute 'lsp-face-highlight-textual nil
-                      ;;:background "#474747")
+  ;;:background "#474747")
   (with-eval-after-load 'lsp-mode
     (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
   (setq-default lsp-ui-doc-position 'right)
@@ -616,7 +658,7 @@
   ;; enables mouse hover support
   (dap-tooltip-mode 1)
   ;;  use tooltips for mouse hover
-  ;;  if it is not enabled `dap-mode' will use the minibuffer.
+  ;;  if it is not enabled dap-mode' will use the minibuffer.
   (tooltip-mode 1)
   ;;  displays floating panel with debug buttons
   ;;  requies emacs 26+
@@ -636,13 +678,13 @@
 *** company lsp
 #+BEGIN_SRC emacs-lisp
   ;; Lsp completion
-  (use-package company-lsp
-    :defer t
-    :after lsp company
-    :init
-    (setq company-lsp-cache-candidates 'auto)
-    :config
-    (setq company-lsp-filter-candidates t))
+ ;; (use-package company-lsp
+  ;;  :defer t
+  ;;  :after lsp company
+  ;;  :init
+  ;;  (setq company-lsp-cache-candidates 'auto)
+  ;;  :config
+  ;;  (setq company-lsp-filter-candidates t))
 #+END_SRC
 
 *** GO PLS configurations
@@ -748,18 +790,23 @@
 #+BEGIN_SRC emacs-lisp
   (require 'dap-go)
 #+END_SRC
-** Treemacs
+*** Go Modify Tags
 #+BEGIN_SRC emacs-lisp
-  ;; project-explorer installation
+  (use-package go-tag
+  :ensure t)
+(setq go-tag-args (list "-transform" "camelcase"))
+#+END_SRC
+** Treemacs
+*** treemacs
+#+BEGIN_SRC emacs-lisp
+        ;; project-explorer installation
   (use-package treemacs
     :ensure t
-    :bind
-    ("M-p" . treemacs)
-    ("M-0" . treemacs-select-window)
-    )
+    :bind ("M-p" . treemacs)
+    ("M-0" . treemacs-select-window))
   (setq treemacs-icons-dired-mode nil)
   (setq treemacs-filewatch-mode t)
-  (setq treemacs-indentation-string " ")
+  (setq treemacs-indentation-string "  ")
   (setq treemacs-fringe-indicator-mode t)
   (setq treemacs-git-mode 'extended)
   (setq treemacs-show-hidden-files t)
@@ -767,8 +814,47 @@
   (setq treemacs-recenter-after-file-follow t)
   (setq split-width-threshold 0)
   (setq treemacs-position 'right)
-  (setq treemacs-no-png-images t)
-  (setq treemacs-width 50)
+  ;;(setq treemacs-no-png-images nil)
+  (setq treemacs-width 80)
+  (setq treemacs-show-hidden-files t)
+  (setq treemacs-is-never-other-window nil)
+  (use-package treemacs-evil
+    :after (treemacs evil)
+    :ensure t)
+  (setq-default treemacs–fringe-indicator-bitmap t)
+  (setq treemacs-show-cursor nil)
+  (treemacs-fringe-indicator-mode nil)
+  (setq treemacs-indentation 1)
+  (setq treemacs-wrap-around nil)
+  ;;remove line number in treemacs
+  (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1)))
+  ;;(bind-key "M-s-0"  'treemacs-quit)
+
+  ;;(use-package treemacs-icons-dired
+  ;; :after (treemacs dired)
+  ;; :ensure t
+  ;; :config (treemacs-icons-dired-mode))
+#+END_SRC
+*** treemacs icons
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons
+     :ensure t)
+
+          ;;(setq doom-themes-treemacs-theme "doom-tomorrow-night")
+          ;;(doom-themes-treemacs-config)
+              ;;(all-the-icons-wicon "tornado" :face 'all-the-icons-blue)
+            ;;(setq-default all-the-icons-color-icons nil)
+
+              ;;(set-fontset-font t 'unicode (font-spec :family "Material Icons") nil 'append)
+              ;;(propertize (all-the-icons-octicon "package")
+               ;;           'face `(:family ,(all-the-icons-octicon-family) :height 1.2)
+                ;;          'display '(raise -0.1))
+            ;;(setq-default dired-mode all-the-icons-octicon "file-directory" :v-adjust 0.0 :face all-the-icons-blue)
+        ;; (image-type-availabe-p 'imagemagick)
+     ;;  (treemacs-resize-icons 44)
+   (setq doom-themes-treemacs-enable-variable-pitch nil)
+  ;; (setq-default doom-variable-pitch-font (font-spec :family "JetBrain Mono" :size 14))
+  ;; (treemacs-resize-icons 44)
 #+END_SRC
 ** Treemacs Lsp
 #+BEGIN_SRC emacs-lisp
@@ -817,10 +903,45 @@
                      :server-id 'gopls-remote))
 #+END_SRC
 ** GUI Theme
+*** Doom
 #+BEGIN_SRC emacs-lisp
-  (use-package base16-theme
-     :ensure t)
-  ;;THE INITIALIZATION OF THIS THEME IS DONE IN THE init.el FILE
+    ;;(use-package base16-theme
+    ;;   :ensure t)
+    ;;THE INITIALIZATION OF THIS THEME IS DONE IN THE init.el FILE
+    (use-package doom-themes
+    :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-tomorrow-night t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (all-the-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+ ;; (setq-default doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 12))
+
+
+#+END_SRC
+*** Doom Modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+        :ensure t
+        :hook (after-init . doom-modeline-mode))
+  (setq doom-modeline-major-mode-icon t)
+  (setq doom-modeline-major-mode-color-icon t)
+  (setq doom-modeline-buffer-state-icon t)
+  (setq doom-modeline-buffer-modification-icon t)
+  (setq doom-modeline-workspace-name t)
+  (setq doom-modeline-lsp t)
+  (setq doom-modeline-github nil)
+  (setq doom-modeline-modal-icon t)
 #+END_SRC
 ** Make Mode
 #+BEGIN_SRC emacs-lisp
@@ -835,20 +956,33 @@
 ** Yaml Mode
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
-** Evil Mode
+** Evil 
+*** Evil mode
 #+BEGIN_SRC emacs-lisp
-   (use-package evil
-     :ensure t
-     :config (evil-mode 1))
+  ;;set these values if using evil collection
+  (setq evil-want-keybinding nil)
+  (setq evil-want-integration t)
 
-   (use-package undo-tree
-     :ensure t)
-   ;(global-undo-tree-mode)
+  (use-package evil
+      :ensure t
+      :config (evil-mode 1))
 
-   (use-package undo-fu
-     :ensure t)
-   (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-   (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+  (use-package undo-tree
+      :ensure t)
+  ;;(global-undo-tree-mode)
+
+  (use-package undo-fu
+      :ensure t)
+  (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+  (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+
+  ;;Evil Collection
+#+END_SRC
+*** Evil Collection
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-collection
+    :ensure t
+    :init (evil-collection-init))
 #+END_SRC
 ** Package updater
 #+BEGIN_SRC emacs-lisp
@@ -860,9 +994,19 @@
      (auto-package-update-maybe))
 
 #+END_SRC
-** Helm
+** Helm plugin
+*** Helm
 #+BEGIN_SRC emacs-lisp
-  (use-package helm
+      (use-package helm
+        :ensure t
+    :bind ("C-x C-b" . helm-mini)
+  ("C-s-s" . helm-occur))
+    ;;(global-set-key (kbd "C-x b") 'ibuffer)
+
+#+END_SRC
+*** Helm Swoop
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-swoop
     :ensure t)
 #+END_SRC
 ** Project wide search ag : the silver search
@@ -870,16 +1014,35 @@
   (use-package ag
     :ensure t)
 #+END_SRC
-** Ripgrep
+** Fuzzy Search
+*** Rip Grep
 #+BEGIN_SRC emacs-lisp
     (use-package rg
       :ensure t
       :init (rg-enable-default-bindings))
 #+END_SRC
-** Magit
+*** snails
+#+BEGIN_SRC emacs-lisp
+  ;;(add-to-list 'load-path "~/.emacs.d/custom/snails") 
+  ;;(require 'snails)
+  ;;(setq-default snails-backend-rg t)
+
+#+END_SRC
+** Git
+*** Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t)
+
+ ;; (use-package github-review
+ ;;   :ensure t)
+;;(setq-default github-review-host "gitlab.connectwisedev.com")
+#+END_SRC
+*** Git Gutter
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter
+    :ensure t)
+  (global-git-gutter-mode +1)
 #+END_SRC
 ** Python
 *** Python Mode
@@ -921,6 +1084,7 @@
     :defer t
     :init
     (advice-add 'python-mode :before 'elpy-enable))
+(add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1)))
 #+END_SRC
 *** Python lsp
 #+BEGIN_SRC emacs-lisp
@@ -996,4 +1160,29 @@
   ;;     ("q" quit-window "quit" :color blue))
 
   ;;   (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
+#+END_SRC
+
+** Goto Line Preview
+#+BEGIN_SRC emacs-lisp
+(use-package  goto-line-preview
+:ensure t)
+#+END_SRC
+
+** Fireplace
+#+BEGIN_SRC emacs-lisp
+  (use-package fireplace
+  :ensure t)
+#+END_SRC
+
+** ZoneMode
+#+BEGIN_SRC emacs-lisp
+  (use-package zone
+  :ensure t)
+  (zone-when-idle 60)
+#+END_SRC
+
+** Hacker News
+#+BEGIN_SRC emacs-lisp
+  ;;(use-package hackernews
+  ;;:ensure t)
 #+END_SRC
